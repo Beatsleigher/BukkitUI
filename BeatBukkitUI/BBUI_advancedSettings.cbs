@@ -1,9 +1,0 @@
-### BeatBukkitUI Advanced Properties ###
-# Only change these values if you know what you're doing!
-# Some of these settings may be experimental and may break the program,
-# or worse, your server!
-
-# Defines the UI to be loaded.
-uiLevel=basic
-
-### EOF ###

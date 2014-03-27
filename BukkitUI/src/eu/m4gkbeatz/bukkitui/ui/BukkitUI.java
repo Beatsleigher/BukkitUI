@@ -81,7 +81,15 @@ public class BukkitUI extends javax.swing.JFrame {
             model.addElement(obj);
         }
         jComboBox1.setModel(model);
-        jComboBox1.setSelectedItem(settings.getLayout().toString());
+        if (settings.getLayout().equals("BukkitUI")) {
+            jComboBox1.setSelectedIndex(0);
+        } else if (settings.getLayout().equals("BukkitUI_blue")) {
+            jComboBox1.setSelectedIndex(1);
+        } else if (settings.getLayout().equals("BukkitUI_green")) {
+            jComboBox1.setSelectedIndex(2);
+        } else if (settings.getLayout().equals("BukkitUI_orange")) {
+            jComboBox1.setSelectedIndex(3);
+        } /*NOTE: I already tried using .setSelectedItem(Object obj); IT DIDN'T WORK.*/
         
         craftbukkitLocation.setText(settings.getCraftbukkit().getAbsolutePath());
         
@@ -146,6 +154,7 @@ public class BukkitUI extends javax.swing.JFrame {
         serverStatusLabel = new javax.swing.JLabel();
         closeBtn = new javax.swing.JButton();
         minimizeBtn = new javax.swing.JButton();
+        serverRuntime = new javax.swing.JLabel();
         backgroundImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -682,6 +691,9 @@ public class BukkitUI extends javax.swing.JFrame {
             }
         });
 
+        serverRuntime.setForeground(new java.awt.Color(255, 255, 255));
+        serverRuntime.setText("Runtime: 00:00:00");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -692,6 +704,8 @@ public class BukkitUI extends javax.swing.JFrame {
                     .addComponent(jTabbedPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(serverStatusLabel)
+                        .addGap(18, 18, 18)
+                        .addComponent(serverRuntime)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -710,7 +724,9 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(serverStatusLabel)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(serverStatusLabel)
+                    .addComponent(serverRuntime))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -748,9 +764,23 @@ public class BukkitUI extends javax.swing.JFrame {
 
     private void closeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeBtnActionPerformed
         try {
+            switch (serverState) {
+                case INSTALLING:
+                    JOptionPane.showMessageDialog(null, "WARNING: The server is being installed. Please wait until the process has finished!", "Server is Installing!", JOptionPane.WARNING_MESSAGE);
+                    return;
+                case ONLINE:
+                    JOptionPane.showMessageDialog(null, "WARNING: The server is still running! Please stop the server, before exiting!", "Server is Running!", JOptionPane.WARNING_MESSAGE);
+                    return;
+                case STARTING:
+                    JOptionPane.showMessageDialog(null, "WARNING: The server is currenty starting! Please stop the server, before exiting!", "Server is Running!", JOptionPane.WARNING_MESSAGE);
+                    return;
+                case REBOOTING:
+                    JOptionPane.showMessageDialog(null, "WARNING: The server is rebooting! Please stop the server, before exiting!", "Server is Running!", JOptionPane.WARNING_MESSAGE);
+                    return;
+            }
             settings.save();
             System.exit(1024);
-        } catch (IOException ex) {}
+        } catch (Exception ex) {}
     }//GEN-LAST:event_closeBtnActionPerformed
 
     private void minimizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minimizeBtnActionPerformed
@@ -832,27 +862,31 @@ public class BukkitUI extends javax.swing.JFrame {
      * Starts Bukkit Server
      */
     private void startServer() {
-        System.out.println("Starting Craftbukkit...");
-        serverStatusLabel.setIcon(WORKING);
+        serverRuntime.setText("Runtime: 00:00:00");
         try {
             if (serverState != ServerState.OFFLINE) {
                 JOptionPane.showMessageDialog(null, "ERROR: The server is not offline! Please make sure the server is offline, before trying to start it.", 
                         "Server is not offline!", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            System.out.println("Starting Craftbukkit...");
+            serverStatusLabel.setIcon(WORKING);
+            serverStatusLabel.setText("Starting...");
+            serverState = ServerState.STARTING;
             consoleLog.setText("");
             System.out.println("Preparing arguments...");
             processArgs.clear();
             processArgs.add(settings.getJava().getAbsolutePath());
             processArgs.add("-jar");
             processArgs.add(settings.getCraftbukkit().getAbsolutePath()); 
-            //processArgs.add("--nojline");
+            processArgs.add("--nojline");
             System.out.println("Args list:");
             for (String str : processArgs)
                 System.out.println("\t" + str);
 
             process = new ProcessBuilder(processArgs);
             process.directory(settings.getServerDir());
+            process.redirectErrorStream(true);
         
             System.out.println("Starting process...");
             pr = process.start();
@@ -865,6 +899,7 @@ public class BukkitUI extends javax.swing.JFrame {
             monitorServer();
         } catch (Exception ex) {
             serverStatusLabel.setIcon(OFFLINE);
+            serverStatusLabel.setText("OFFLINE");
             JOptionPane.showMessageDialog(null, "ERROR: Error while starting the server!\n" + ex.toString() + 
                     "\n The stack trace was printed to the console.", "Error Starting Server!", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace(System.err);
@@ -876,17 +911,55 @@ public class BukkitUI extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    serverStatusLabel.setIcon(ONLINE);
                     String line = "";
-                    while ((line = processReader.readLine()) != null/* && runServer*/) {
+                    while ((line = processReader.readLine()) != null && runServer) {
                         consoleLog.append(line + "\n");
                         System.out.print("Craftbukkit Output: " + line + "\n");
+                        if (line.toLowerCase().contains("done")) {
+                            serverStatusLabel.setIcon(ONLINE);
+                            serverStatusLabel.setText("ONLINE");
+                            serverState = ServerState.ONLINE;
+                            monitorServerRuntime();
+                        }
                     }
                     serverStatusLabel.setIcon(OFFLINE);
+                    serverStatusLabel.setText("OFFLINE");
                 } catch (Exception ex) {
                     serverStatusLabel.setIcon(OFFLINE);
                     JOptionPane.showMessageDialog(null, "ERROR: An error occured while trying to read from the server!\n" + ex.toString() + "\nThe server will now be destroyed.", "Destroying Process!", JOptionPane.ERROR_MESSAGE);
                     killServer();
+                }
+            }
+        }.start();
+    }
+    
+    private void monitorServerRuntime() {
+        new Thread() {
+            private int seconds = 0;
+            private int minutes = 0;
+            private long hours = 0;
+            @Override
+            public void run() {
+                try {
+                    while (serverState == ServerState.ONLINE) {
+                        Thread.sleep(1000);
+                        seconds++;
+                        if (seconds == 60) {
+                            seconds = 0;
+                            minutes++;
+                        }
+                        if (minutes == 60) {
+                            minutes = 0;
+                            hours++;
+                        }
+                        serverRuntime.setText("Runtime: " + hours + ":" + minutes + ":" + seconds);
+                    }
+                    interrupt();
+                } catch (InterruptedException ex) {
+                    System.err.println("ERROR: Error monitoring server up-time.");
+                    System.err.println(ex.toString());
+                    ex.printStackTrace(System.err);
+                    serverRuntime.setText("Runtime: ERROR");
                 }
             }
         }.start();
@@ -899,6 +972,9 @@ public class BukkitUI extends javax.swing.JFrame {
             runServer = false;
             Thread.sleep(3000);
             pr.destroy();
+            serverStatusLabel.setIcon(OFFLINE);
+            serverStatusLabel.setText("OFFLINE");
+            serverState = ServerState.OFFLINE;
         } catch (IOException | InterruptedException ex) {
             JOptionPane.showMessageDialog(null, "ERROR: An error occured while attempting to \"kindly\" stop the server.\n" + ex.toString()
                     + "\nIt will now be destroyed.", 
@@ -964,6 +1040,7 @@ public class BukkitUI extends javax.swing.JFrame {
     private javax.swing.JButton minimizeBtn;
     private javax.swing.JButton restartServerBtn;
     private javax.swing.JButton serverPropertiesBtn;
+    private javax.swing.JLabel serverRuntime;
     private javax.swing.JLabel serverStatusLabel;
     private javax.swing.JCheckBox startServerAutomaticallyCheckbox;
     private javax.swing.JButton startServerBtn;
