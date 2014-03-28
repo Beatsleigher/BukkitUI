@@ -11,6 +11,9 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowActivated" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowActivated"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -48,7 +51,7 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jTabbedPane1" max="32767" attributes="0"/>
+                      <Component id="jTabbedPane1" pref="836" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="serverStatusLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -504,7 +507,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JList" name="jList5">
+                        <Component class="javax.swing.JList" name="playerList">
                           <Properties>
                             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                               <StringArray count="0"/>
@@ -584,7 +587,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" pref="775" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" pref="770" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -715,7 +718,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jTabbedPane2" max="32767" attributes="0"/>
+                          <Component id="jTabbedPane2" pref="798" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -786,44 +789,22 @@
                             <DimensionLayout dim="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
+                                      <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="102" attributes="0">
-                                              <EmptySpace max="-2" attributes="0"/>
-                                              <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Component id="allowNether" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="enableQuery" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="allowFlight" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              </Group>
-                                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                                              <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Component id="generateStructures" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="spawnMonsters" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              </Group>
-                                          </Group>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
-                                              <Component id="enableRcon" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
-                                              <Component id="spawnNPCs" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
-                                              <Component id="whiteList" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
-                                              <Component id="spawnAnimals" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
-                                              <Component id="onlineMode" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
-                                              <Component id="enablePVP" min="-2" max="-2" attributes="0"/>
-                                          </Group>
+                                          <Component id="allowNether" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enableQuery" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="allowFlight" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enableRcon" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="spawnNPCs" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="whiteList" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="spawnAnimals" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="onlineMode" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enablePVP" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="generateStructures" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="spawnMonsters" alignment="0" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace pref="43" max="32767" attributes="0"/>
                                   </Group>
@@ -998,7 +979,7 @@
                                           <Component id="levelType" alignment="0" max="32767" attributes="0"/>
                                           <Component id="serverPort" alignment="0" max="32767" attributes="0"/>
                                           <Component id="levelName" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="motd" alignment="0" pref="278" max="32767" attributes="0"/>
+                                          <Component id="motd" alignment="0" pref="263" max="32767" attributes="0"/>
                                           <Component id="levelSeed" alignment="0" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -1218,6 +1199,9 @@
                               </Properties>
                             </Component>
                             <Component class="javax.swing.JTextField" name="levelSeed">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="PoweredByBukkitUI"/>
+                              </Properties>
                             </Component>
                           </SubComponents>
                         </Container>
@@ -1241,11 +1225,11 @@
                               <Group type="102" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jScrollPane2" pref="763" max="32767" attributes="0"/>
+                                      <Component id="jScrollPane2" pref="758" max="32767" attributes="0"/>
                                       <Group type="102" attributes="0">
                                           <Component id="jTextField1" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="addBannedIP" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -1260,7 +1244,7 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="addBannedIP" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -1275,7 +1259,7 @@
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                           <SubComponents>
-                            <Component class="javax.swing.JList" name="jList1">
+                            <Component class="javax.swing.JList" name="bannedIPList">
                               <Properties>
                                 <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                                   <StringArray count="0"/>
@@ -1286,10 +1270,13 @@
                         </Container>
                         <Component class="javax.swing.JTextField" name="jTextField1">
                         </Component>
-                        <Component class="javax.swing.JButton" name="jButton1">
+                        <Component class="javax.swing.JButton" name="addBannedIP">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Add..."/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addBannedIPActionPerformed"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -1311,11 +1298,11 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jScrollPane3" pref="763" max="32767" attributes="0"/>
+                                      <Component id="jScrollPane3" pref="758" max="32767" attributes="0"/>
                                       <Group type="102" attributes="0">
                                           <Component id="jTextField2" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                                          <Component id="addBannedPlayer" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -1330,7 +1317,7 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="addBannedPlayer" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -1340,10 +1327,13 @@
                       <SubComponents>
                         <Component class="javax.swing.JTextField" name="jTextField2">
                         </Component>
-                        <Component class="javax.swing.JButton" name="jButton2">
+                        <Component class="javax.swing.JButton" name="addBannedPlayer">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Add..."/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addBannedPlayerActionPerformed"/>
+                          </Events>
                         </Component>
                         <Container class="javax.swing.JScrollPane" name="jScrollPane3">
                           <AuxValues>
@@ -1352,7 +1342,7 @@
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                           <SubComponents>
-                            <Component class="javax.swing.JList" name="jList2">
+                            <Component class="javax.swing.JList" name="bannedPlayersList">
                               <Properties>
                                 <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                                   <StringArray count="0"/>
@@ -1381,11 +1371,11 @@
                               <Group type="102" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jScrollPane4" pref="763" max="32767" attributes="0"/>
+                                      <Component id="jScrollPane4" pref="758" max="32767" attributes="0"/>
                                       <Group type="102" attributes="0">
                                           <Component id="jTextField3" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jButton3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="addOperator" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -1400,7 +1390,7 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="addOperator" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -1415,7 +1405,7 @@
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                           <SubComponents>
-                            <Component class="javax.swing.JList" name="jList3">
+                            <Component class="javax.swing.JList" name="operatorsList">
                               <Properties>
                                 <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                                   <StringArray count="0"/>
@@ -1426,10 +1416,13 @@
                         </Container>
                         <Component class="javax.swing.JTextField" name="jTextField3">
                         </Component>
-                        <Component class="javax.swing.JButton" name="jButton3">
+                        <Component class="javax.swing.JButton" name="addOperator">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Add..."/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addOperatorActionPerformed"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -1451,11 +1444,11 @@
                               <Group type="102" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jScrollPane5" pref="763" max="32767" attributes="0"/>
+                                      <Component id="jScrollPane5" pref="758" max="32767" attributes="0"/>
                                       <Group type="102" attributes="0">
                                           <Component id="jTextField4" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jButton4" min="-2" max="-2" attributes="0"/>
+                                          <Component id="addWhiteList" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -1470,7 +1463,7 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jTextField4" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jButton4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="addWhiteList" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -1485,7 +1478,7 @@
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                           <SubComponents>
-                            <Component class="javax.swing.JList" name="jList4">
+                            <Component class="javax.swing.JList" name="whitelist">
                               <Properties>
                                 <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                                   <StringArray count="0"/>
@@ -1496,10 +1489,13 @@
                         </Container>
                         <Component class="javax.swing.JTextField" name="jTextField4">
                         </Component>
-                        <Component class="javax.swing.JButton" name="jButton4">
+                        <Component class="javax.swing.JButton" name="addWhiteList">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Add..."/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addWhiteListActionPerformed"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -1528,14 +1524,11 @@
                                       <Group type="102" attributes="0">
                                           <Component id="jPanel24" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jPanel25" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                          <Component id="jPanel25" max="32767" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="1" attributes="0">
                                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                          <Component id="jButton5" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jButton6" min="-2" max="-2" attributes="0"/>
+                                          <Component id="saveBukkitYml" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -1546,23 +1539,20 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="jPanel23" min="-2" max="-2" attributes="0"/>
                                       <Group type="102" attributes="0">
-                                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                              <Component id="jPanel25" alignment="0" max="32767" attributes="0"/>
-                                              <Component id="jPanel24" alignment="0" max="32767" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="jPanel24" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jPanel25" alignment="0" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="jPanel26" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="jPanel27" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="124" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jButton5" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jButton6" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="saveBukkitYml" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <Component id="jPanel23" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="32767" attributes="0"/>
                               </Group>
@@ -1612,7 +1602,7 @@
                                                   <Component id="useExactLocation" alignment="0" min="-2" max="-2" attributes="0"/>
                                                   <Component id="queryPlugins" alignment="0" min="-2" max="-2" attributes="0"/>
                                                   <Group type="102" alignment="0" attributes="0">
-                                                      <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                                                      <Component id="allowEnd" min="-2" max="-2" attributes="0"/>
                                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                                       <Component id="warnOnOverload" min="-2" max="-2" attributes="0"/>
                                                   </Group>
@@ -1628,7 +1618,7 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="allowEnd" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="warnOnOverload" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -1673,7 +1663,7 @@
                             </DimensionLayout>
                           </Layout>
                           <SubComponents>
-                            <Component class="javax.swing.JCheckBox" name="jCheckBox1">
+                            <Component class="javax.swing.JCheckBox" name="allowEnd">
                               <Properties>
                                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1828,7 +1818,7 @@
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="jLabel33" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="waterAnimalTxtBox" min="-2" max="-2" attributes="0"/>
+                                              <Component id="waterAnimalLimitTxtBox" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="jLabel34" min="-2" max="-2" attributes="0"/>
                                           </Group>
@@ -1856,7 +1846,7 @@
                                           <Component id="jLabel34" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="ambientLimitTxtBox" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel33" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="waterAnimalTxtBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="waterAnimalLimitTxtBox" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -1878,7 +1868,7 @@
                             </Component>
                             <Component class="javax.swing.JTextField" name="animalLimitTxtBox">
                               <Properties>
-                                <Property name="text" type="java.lang.String" value="70"/>
+                                <Property name="text" type="java.lang.String" value="15"/>
                               </Properties>
                             </Component>
                             <Component class="javax.swing.JLabel" name="jLabel32">
@@ -1897,9 +1887,9 @@
                                 <Property name="text" type="java.lang.String" value="Water Animals:"/>
                               </Properties>
                             </Component>
-                            <Component class="javax.swing.JTextField" name="waterAnimalTxtBox">
+                            <Component class="javax.swing.JTextField" name="waterAnimalLimitTxtBox">
                               <Properties>
-                                <Property name="text" type="java.lang.String" value="70"/>
+                                <Property name="text" type="java.lang.String" value="15"/>
                               </Properties>
                             </Component>
                             <Component class="javax.swing.JLabel" name="jLabel34">
@@ -1912,7 +1902,7 @@
                             </Component>
                             <Component class="javax.swing.JTextField" name="ambientLimitTxtBox">
                               <Properties>
-                                <Property name="text" type="java.lang.String" value="70"/>
+                                <Property name="text" type="java.lang.String" value="15"/>
                               </Properties>
                             </Component>
                           </SubComponents>
@@ -1939,7 +1929,7 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="loadThresholdTxtBox" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="gcPeriodInTicksTxtBox" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="gcPeriodInTicksTxtBox" alignment="0" pref="0" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="32767" attributes="0"/>
                                   </Group>
@@ -2012,7 +2002,7 @@
                                       <Component id="jLabel38" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="ticksPerMonsterSpawnTxtBox" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="32767" attributes="0"/>
+                                      <EmptySpace pref="23" max="32767" attributes="0"/>
                                       <Component id="jLabel39" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="ticksPerAutoSave" min="-2" max="-2" attributes="0"/>
@@ -2096,7 +2086,7 @@
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="jLabel40" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jTextField5" max="32767" attributes="0"/>
+                                      <Component id="autoUpdaterHost" max="32767" attributes="0"/>
                                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -2106,7 +2096,7 @@
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="autoUpdaterEnabled" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel40" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jTextField5" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="autoUpdaterHost" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                             </DimensionLayout>
@@ -2129,21 +2119,16 @@
                                 <Property name="text" type="java.lang.String" value="Host: "/>
                               </Properties>
                             </Component>
-                            <Component class="javax.swing.JTextField" name="jTextField5">
+                            <Component class="javax.swing.JTextField" name="autoUpdaterHost">
                               <Properties>
                                 <Property name="text" type="java.lang.String" value="dl.bukkit.org"/>
                               </Properties>
                             </Component>
                           </SubComponents>
                         </Container>
-                        <Component class="javax.swing.JButton" name="jButton5">
+                        <Component class="javax.swing.JButton" name="saveBukkitYml">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Save..."/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JButton" name="jButton6">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Load..."/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -2186,7 +2171,7 @@
                                       <Component id="jPanel12" max="32767" attributes="0"/>
                                       <Component id="jPanel13" max="32767" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="0" pref="499" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="494" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>

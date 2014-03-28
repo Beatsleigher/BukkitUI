@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
 package eu.m4gkbeatz.bukkitui.ui;
 
 import javax.swing.*;
@@ -30,25 +29,28 @@ import eu.m4gkbeatz.bukkitui.settings.*;
 import eu.m4gkbeatz.bukkitui.io.*;
 import eu.m4gkbeatz.bukkitui.server.players.Player;
 
+import org.yaml.snakeyaml.Yaml;
+
 /**
  *
  * @author beatsleigher
  */
-@SuppressWarnings({"TooBroadCatch"})
+@SuppressWarnings({"TooBroadCatch", "ConvertToTryWithResources", "UnusedAssignment", "UseSpecificCatch", "SleepWhileInLoop"})
 public class BukkitUI extends javax.swing.JFrame {
-    
+
     //============ Constant Values ============\\
     private final ImageIcon ONLINE = new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/circle_green_24.png"));
     private final ImageIcon OFFLINE = new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/circle_red_24.png"));
     private final ImageIcon WORKING = new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/circle_orange_24.png"));
-    
+
     /**
      * Enumeration containing possible server states.
      */
     enum ServerState {
+
         OFFLINE, ONLINE, STARTING, INSTALLING, REBOOTING
     }
-    
+
     Map<String, ImageIcon> imageMap = null;
     Point origin = this.getLocation();
     SettingsManager settings = null;
@@ -67,8 +69,9 @@ public class BukkitUI extends javax.swing.JFrame {
     //<editor-fold defaultstate="collapsed" desc="Constructor">
     /**
      * Creates new JFrame BukkitUI.
+     *
      * @param settings
-     * @param log 
+     * @param log
      */
     public BukkitUI(SettingsManager settings, Logger log) {
         this.settings = settings;
@@ -80,7 +83,7 @@ public class BukkitUI extends javax.swing.JFrame {
         applySettings();
     }
     //</editor-fold>
-    
+
     private void applySettings() {
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         for (Object obj : BukkitUI_Layout.values()) {
@@ -101,14 +104,344 @@ public class BukkitUI extends javax.swing.JFrame {
                 jComboBox1.setSelectedIndex(3);
                 break;
         }
-        
+
         craftbukkitLocation.setText(settings.getCraftbukkit().getAbsolutePath());
-        
+
         startServerAutomaticallyCheckbox.setSelected(settings.startServerAutomatically());
-        
+
         autoDetectNewPluginsCheckbox.setSelected(settings.autoDetectNewPlugins());
-        
+
         checkForUpdatesCheckbox.setSelected(settings.checkForUpdates());
+    }
+
+    private void loadServerInfo() {
+        //========== Server Properties ==========\\
+        File fileToRead = null;
+        BufferedReader reader = null;
+        String line = "";
+        String[] array = null;
+        //<editor-fold defaultstate="collapsed" desc="      ">
+        try {
+            fileToRead = new File(settings.getServerDir() + "/server.properties");
+            if (fileToRead.exists()) {
+                reader = new BufferedReader(new FileReader(fileToRead));
+                while ((line = reader.readLine()) != null) {
+                    if (line.startsWith("allow-nether=")) {
+                        array = line.split("=");
+                        allowNether.setSelected(Boolean.valueOf(array[1]));
+                    }
+                    if (line.startsWith("level-name=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            levelName.setText(array[1]);
+                        }
+                    }
+                    if (line.startsWith("enable-query=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            enableQuery.setSelected(Boolean.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("allow-flight=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            allowFlight.setSelected(Boolean.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("server-port=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            serverPort.setText(array[1]);
+                        }
+                    }
+                    if (line.startsWith("level-type=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            levelType.setSelectedItem(array[1]);
+                        }
+                    }
+                    if (line.startsWith("allow-rcon=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            enableRcon.setSelected(Boolean.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("level-seed=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            levelSeed.setText(array[1]);
+                        }
+                    }
+                    if (line.startsWith("server-ip=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            serverIP.setText(array[1]);
+                        }
+                    }
+                    if (line.startsWith("max-build-hight=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            maxBuildHight.setText(array[1]);
+                        }
+                    }
+                    if (line.startsWith("spawn-npcs=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            spawnNPCs.setSelected(Boolean.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("white-list=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            whiteList.setSelected(Boolean.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("spawn-animals=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            spawnAnimals.setSelected(Boolean.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("online-mode=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            onlineMode.setSelected(Boolean.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("pvp=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            enablePVP.setSelected(Boolean.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("difficulty=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            difficulty.setText(array[1]);
+                        }
+                    }
+                    if (line.startsWith("gamemode=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            gameMode.setSelectedIndex(Integer.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("max-players=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            maxPlayers.setText(array[1]);
+                        }
+                    }
+                    if (line.startsWith("spawn-monsters=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            spawnMonsters.setSelected(Boolean.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("generate-structures=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            generateStructures.setSelected(Boolean.valueOf(array[1]));
+                        }
+                    }
+                    if (line.startsWith("view-distance=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            viewDistance.setText(array[1]);
+                        }
+                    }
+                    if (line.startsWith("motd=")) {
+                        array = line.split("=");
+                        if (array.length != 1) {
+                            motd.setText(array[1]);
+                        }
+                    }
+
+                }
+                reader.close();
+            } else {
+                buildServerProps();
+            }
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while reading server.properties!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
+        //</editor-fold>
+        //========== Bukkit Properties ==========\\
+        //<editor-fold defaultstate="collapsed" desc="      ">
+        try {
+            fileToRead = new File(settings.getServerDir() + "bukkit.yml");
+            if (fileToRead.exists()) {
+                reader = new BufferedReader(new FileReader(fileToRead));
+                while ((line = reader.readLine()) != null) {
+                    //===== Settings =====\\
+                    if (line.contains("allow-end:")) {
+                        array = line.split(":");
+                        allowEnd.setSelected(Boolean.valueOf(array[1]));
+                    }
+                    if (line.contains("warn-on-overload:")) {
+                        array = line.split(":");
+                        warnOnOverload.setSelected(Boolean.valueOf(array[1]));
+                    }
+                    if (line.contains("permissions-file:")) {
+                        array = line.split(":");
+                        permsFileTxtBox.setText(array[1]);
+                    }
+                    if (line.contains("update-folder:")) {
+                        array = line.split(":");
+                        updateFolderTxtBox.setText(array[1]);
+                    }
+                    if (line.contains("ping-packet-limit:")) {
+                        array = line.split(":");
+                        pingLimitTxtBox.setText(array[1]);
+                    }
+                    if (line.contains("use-exact-login-location:")) {
+                        array = line.split(":");
+                        useExactLocation.setSelected(Boolean.valueOf(array[1]));
+                    }
+                    if (line.contains("plugin-profiling:")) {
+                        array = line.split(":");
+                        pluginProfiling.setSelected(Boolean.valueOf(array[1]));
+                    }
+                    if (line.contains("connection-throttle:")) {
+                        array = line.split(":");
+                        connectionThrottleTxtBox.setText(array[1]);
+                    }
+                    if (line.contains("query-plugins:")) {
+                        array = line.split(":");
+                        queryPlugins.setSelected(Boolean.valueOf(array[1]));
+                    }
+                    if (line.contains("deprecated-verbose:")) {
+                        array = line.split(":");
+                        deprecatedVerbose.setSelectedItem(array[1]);
+                    }
+                    if (line.contains("shutdown-message:")) {
+                        array = line.split(":");
+                        shutdownMessageTxtBox.setText(array[1]);
+                    }
+                    //===== Spawn Limits =====\\
+                    if (line.contains("monsters:")) {
+                        array = line.split(":");
+                        monsterLimitTxtBox.setText(array[1]);
+                    }
+                    if (line.contains("animals:")) {
+                        array = line.split(":");
+                        animalLimitTxtBox.setText(array[1]);
+                    }
+                    if (line.contains("water-animals:")) {
+                        array = line.split(":");
+                        waterAnimalLimitTxtBox.setText(array[1]);
+                    }
+                    if (line.contains("ambient:")) {
+                        array = line.split(":");
+                        ambientLimitTxtBox.setText(array[1]);
+                    }
+                    //===== Chunk GC =====\\
+                    if (line.contains("period-in-ticks:")) {
+                        array = line.split(":");
+                        gcPeriodInTicksTxtBox.setText(array[1]);
+                    }
+                    if (line.contains("load-treshold:")) {
+                        array = line.split(":");
+                        loadThresholdTxtBox.setText(array[1]);
+                    }
+                    //===== Ticks Per... =====\\
+                    if (line.contains("animal-spawns:")) {
+                        array = line.split(":");
+                        ticksPerAnimalSpawnTxtBox.setText(array[1]);
+                    }
+                    if (line.contains("monster-spawns:")) {
+                        array = line.split(":");
+                        ticksPerMonsterSpawnTxtBox.setText(array[1]);
+                    }
+                    if (line.contains("autosave:")) {
+                        array = line.split(":");
+                        ticksPerAutoSave.setText(array[1]);
+                    }
+                    //===== Auto Updaters =====\\
+                    if (line.contains("enabled:")) {
+                        array = line.split(":");
+                        autoUpdaterEnabled.setSelected(Boolean.valueOf(array[1]));
+                    }
+                    if (line.contains("host:")) {
+                        array = line.split(":");
+                        autoUpdaterHost.setText(array[1]);
+                    }
+
+                }
+                reader.close();
+            } else {
+                buildBukkitYml(fileToRead);
+            }
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while reading server.properties!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
+        //</editor-fold>
+        //===== Banned IPs =====\\
+        try {
+            fileToRead = new File(settings.getServerDir() + "/banned-ips.txt");
+            if (fileToRead.exists()) {
+                DefaultListModel model = new DefaultListModel();
+                reader = new BufferedReader(new FileReader(fileToRead));
+                while ((line = reader.readLine()) != null) {
+                    model.addElement(line);
+                }
+                reader.close();
+                bannedIPList.setModel(model);
+            }
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while reading banned IPs!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
+        //===== Banned Players =====\\
+        try {
+            fileToRead = new File(settings.getServerDir() + "/banned-players.txt");
+            if (fileToRead.exists()) {
+                DefaultListModel model = new DefaultListModel();
+                reader = new BufferedReader(new FileReader(fileToRead));
+                while ((line = reader.readLine()) != null) {
+                    model.addElement(line);
+                }
+                reader.close();
+                bannedPlayersList.setModel(model);
+            }
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while reading banned players!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
+        //===== Operators =====\\
+        try {
+            fileToRead = new File(settings.getServerDir() + "/ops.txt");
+            if (fileToRead.exists()) {
+                DefaultListModel model = new DefaultListModel();
+                reader = new BufferedReader(new FileReader(fileToRead));
+                while ((line = reader.readLine()) != null) {
+                    model.addElement(line);
+                }
+                reader.close();
+                operatorsList.setModel(model);
+            }
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while reading OPs!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
+        //===== Whitelist =====\\
+        try {
+            fileToRead = new File(settings.getServerDir() + "/white-list.txt");
+            if (fileToRead.exists()) {
+                DefaultListModel model = new DefaultListModel();
+                reader = new BufferedReader(new FileReader(fileToRead));
+                while ((line = reader.readLine()) != null) {
+                    model.addElement(line);
+                }
+                reader.close();
+                whitelist.setModel(model);
+            }
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while reading whitelist!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Some Generated Code. Nothing too Important...">
@@ -145,7 +478,7 @@ public class BukkitUI extends javax.swing.JFrame {
         jLabel24 = new javax.swing.JLabel();
         jPanel22 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        jList5 = new javax.swing.JList();
+        playerList = new javax.swing.JList();
         jPanel2 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -195,27 +528,27 @@ public class BukkitUI extends javax.swing.JFrame {
         levelSeed = new javax.swing.JTextField();
         jPanel16 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        bannedIPList = new javax.swing.JList();
         jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        addBannedIP = new javax.swing.JButton();
         jPanel17 = new javax.swing.JPanel();
         jTextField2 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        addBannedPlayer = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
+        bannedPlayersList = new javax.swing.JList();
         jPanel18 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jList3 = new javax.swing.JList();
+        operatorsList = new javax.swing.JList();
         jTextField3 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
+        addOperator = new javax.swing.JButton();
         jPanel19 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jList4 = new javax.swing.JList();
+        whitelist = new javax.swing.JList();
         jTextField4 = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
+        addWhiteList = new javax.swing.JButton();
         jPanel15 = new javax.swing.JPanel();
         jPanel23 = new javax.swing.JPanel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        allowEnd = new javax.swing.JCheckBox();
         warnOnOverload = new javax.swing.JCheckBox();
         useExactLocation = new javax.swing.JCheckBox();
         jLabel25 = new javax.swing.JLabel();
@@ -238,7 +571,7 @@ public class BukkitUI extends javax.swing.JFrame {
         animalLimitTxtBox = new javax.swing.JTextField();
         jLabel32 = new javax.swing.JLabel();
         jLabel33 = new javax.swing.JLabel();
-        waterAnimalTxtBox = new javax.swing.JTextField();
+        waterAnimalLimitTxtBox = new javax.swing.JTextField();
         jLabel34 = new javax.swing.JLabel();
         ambientLimitTxtBox = new javax.swing.JTextField();
         jPanel25 = new javax.swing.JPanel();
@@ -256,9 +589,8 @@ public class BukkitUI extends javax.swing.JFrame {
         jPanel27 = new javax.swing.JPanel();
         autoUpdaterEnabled = new javax.swing.JCheckBox();
         jLabel40 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        autoUpdaterHost = new javax.swing.JTextField();
+        saveBukkitYml = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
@@ -285,6 +617,11 @@ public class BukkitUI extends javax.swing.JFrame {
         setTitle("BukkitUI");
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setOpaque(false);
@@ -496,7 +833,7 @@ public class BukkitUI extends javax.swing.JFrame {
         jPanel22.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel22.setOpaque(false);
 
-        jScrollPane6.setViewportView(jList5);
+        jScrollPane6.setViewportView(playerList);
 
         javax.swing.GroupLayout jPanel22Layout = new javax.swing.GroupLayout(jPanel22);
         jPanel22.setLayout(jPanel22Layout);
@@ -574,7 +911,7 @@ public class BukkitUI extends javax.swing.JFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 770, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -701,35 +1038,21 @@ public class BukkitUI extends javax.swing.JFrame {
         jPanel20Layout.setHorizontalGroup(
             jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel20Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel20Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(allowNether)
-                            .addComponent(enableQuery)
-                            .addComponent(allowFlight))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(generateStructures)
-                            .addComponent(spawnMonsters)))
-                    .addGroup(jPanel20Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(enableRcon))
-                    .addGroup(jPanel20Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(spawnNPCs))
-                    .addGroup(jPanel20Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(whiteList))
-                    .addGroup(jPanel20Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(spawnAnimals))
-                    .addGroup(jPanel20Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(onlineMode))
-                    .addGroup(jPanel20Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(enablePVP)))
+                    .addComponent(allowNether)
+                    .addComponent(enableQuery)
+                    .addComponent(allowFlight)
+                    .addComponent(enableRcon)
+                    .addComponent(spawnNPCs)
+                    .addComponent(whiteList)
+                    .addComponent(spawnAnimals)
+                    .addComponent(onlineMode)
+                    .addComponent(enablePVP))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(generateStructures)
+                    .addComponent(spawnMonsters))
                 .addContainerGap(43, Short.MAX_VALUE))
         );
         jPanel20Layout.setVerticalGroup(
@@ -814,6 +1137,8 @@ public class BukkitUI extends javax.swing.JFrame {
         jLabel23.setForeground(new java.awt.Color(255, 255, 255));
         jLabel23.setText("Level Seed:");
 
+        levelSeed.setText("PoweredByBukkitUI");
+
         javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
         jPanel21.setLayout(jPanel21Layout);
         jPanel21Layout.setHorizontalGroup(
@@ -843,7 +1168,7 @@ public class BukkitUI extends javax.swing.JFrame {
                     .addComponent(levelType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(serverPort)
                     .addComponent(levelName)
-                    .addComponent(motd, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                    .addComponent(motd, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
                     .addComponent(levelSeed))
                 .addContainerGap())
         );
@@ -921,9 +1246,14 @@ public class BukkitUI extends javax.swing.JFrame {
 
         jPanel16.setOpaque(false);
 
-        jScrollPane2.setViewportView(jList1);
+        jScrollPane2.setViewportView(bannedIPList);
 
-        jButton1.setText("Add...");
+        addBannedIP.setText("Add...");
+        addBannedIP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBannedIPActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
         jPanel16.setLayout(jPanel16Layout);
@@ -932,11 +1262,11 @@ public class BukkitUI extends javax.swing.JFrame {
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 763, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
                     .addGroup(jPanel16Layout.createSequentialGroup()
                         .addComponent(jTextField1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(addBannedIP)))
                 .addContainerGap())
         );
         jPanel16Layout.setVerticalGroup(
@@ -947,7 +1277,7 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(addBannedIP))
                 .addContainerGap())
         );
 
@@ -955,9 +1285,14 @@ public class BukkitUI extends javax.swing.JFrame {
 
         jPanel17.setOpaque(false);
 
-        jButton2.setText("Add...");
+        addBannedPlayer.setText("Add...");
+        addBannedPlayer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBannedPlayerActionPerformed(evt);
+            }
+        });
 
-        jScrollPane3.setViewportView(jList2);
+        jScrollPane3.setViewportView(bannedPlayersList);
 
         javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
         jPanel17.setLayout(jPanel17Layout);
@@ -966,11 +1301,11 @@ public class BukkitUI extends javax.swing.JFrame {
             .addGroup(jPanel17Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 763, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
                     .addGroup(jPanel17Layout.createSequentialGroup()
                         .addComponent(jTextField2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)))
+                        .addComponent(addBannedPlayer)))
                 .addContainerGap())
         );
         jPanel17Layout.setVerticalGroup(
@@ -981,7 +1316,7 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2))
+                    .addComponent(addBannedPlayer))
                 .addContainerGap())
         );
 
@@ -989,9 +1324,14 @@ public class BukkitUI extends javax.swing.JFrame {
 
         jPanel18.setOpaque(false);
 
-        jScrollPane4.setViewportView(jList3);
+        jScrollPane4.setViewportView(operatorsList);
 
-        jButton3.setText("Add...");
+        addOperator.setText("Add...");
+        addOperator.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addOperatorActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
         jPanel18.setLayout(jPanel18Layout);
@@ -1000,11 +1340,11 @@ public class BukkitUI extends javax.swing.JFrame {
             .addGroup(jPanel18Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 763, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
                     .addGroup(jPanel18Layout.createSequentialGroup()
                         .addComponent(jTextField3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)))
+                        .addComponent(addOperator)))
                 .addContainerGap())
         );
         jPanel18Layout.setVerticalGroup(
@@ -1015,7 +1355,7 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
+                    .addComponent(addOperator))
                 .addContainerGap())
         );
 
@@ -1023,9 +1363,14 @@ public class BukkitUI extends javax.swing.JFrame {
 
         jPanel19.setOpaque(false);
 
-        jScrollPane5.setViewportView(jList4);
+        jScrollPane5.setViewportView(whitelist);
 
-        jButton4.setText("Add...");
+        addWhiteList.setText("Add...");
+        addWhiteList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addWhiteListActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
         jPanel19.setLayout(jPanel19Layout);
@@ -1034,11 +1379,11 @@ public class BukkitUI extends javax.swing.JFrame {
             .addGroup(jPanel19Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 763, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
                     .addGroup(jPanel19Layout.createSequentialGroup()
                         .addComponent(jTextField4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)))
+                        .addComponent(addWhiteList)))
                 .addContainerGap())
         );
         jPanel19Layout.setVerticalGroup(
@@ -1049,7 +1394,7 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
+                    .addComponent(addWhiteList))
                 .addContainerGap())
         );
 
@@ -1060,9 +1405,9 @@ public class BukkitUI extends javax.swing.JFrame {
         jPanel23.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
         jPanel23.setOpaque(false);
 
-        jCheckBox1.setForeground(new java.awt.Color(255, 255, 255));
-        jCheckBox1.setSelected(true);
-        jCheckBox1.setText("Allow End");
+        allowEnd.setForeground(new java.awt.Color(255, 255, 255));
+        allowEnd.setSelected(true);
+        allowEnd.setText("Allow End");
 
         warnOnOverload.setForeground(new java.awt.Color(255, 255, 255));
         warnOnOverload.setSelected(true);
@@ -1138,7 +1483,7 @@ public class BukkitUI extends javax.swing.JFrame {
                             .addComponent(useExactLocation)
                             .addComponent(queryPlugins)
                             .addGroup(jPanel23Layout.createSequentialGroup()
-                                .addComponent(jCheckBox1)
+                                .addComponent(allowEnd)
                                 .addGap(18, 18, 18)
                                 .addComponent(warnOnOverload)))
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -1148,7 +1493,7 @@ public class BukkitUI extends javax.swing.JFrame {
             jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel23Layout.createSequentialGroup()
                 .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
+                    .addComponent(allowEnd)
                     .addComponent(warnOnOverload))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1191,7 +1536,7 @@ public class BukkitUI extends javax.swing.JFrame {
 
         monsterLimitTxtBox.setText("70");
 
-        animalLimitTxtBox.setText("70");
+        animalLimitTxtBox.setText("15");
 
         jLabel32.setForeground(new java.awt.Color(255, 255, 255));
         jLabel32.setText("Animals:");
@@ -1199,12 +1544,12 @@ public class BukkitUI extends javax.swing.JFrame {
         jLabel33.setForeground(new java.awt.Color(255, 255, 255));
         jLabel33.setText("Water Animals:");
 
-        waterAnimalTxtBox.setText("70");
+        waterAnimalLimitTxtBox.setText("15");
 
         jLabel34.setForeground(new java.awt.Color(255, 255, 255));
         jLabel34.setText("Ambient:");
 
-        ambientLimitTxtBox.setText("70");
+        ambientLimitTxtBox.setText("15");
 
         javax.swing.GroupLayout jPanel24Layout = new javax.swing.GroupLayout(jPanel24);
         jPanel24.setLayout(jPanel24Layout);
@@ -1222,7 +1567,7 @@ public class BukkitUI extends javax.swing.JFrame {
                     .addGroup(jPanel24Layout.createSequentialGroup()
                         .addComponent(jLabel33)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(waterAnimalTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(waterAnimalLimitTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel34)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1244,7 +1589,7 @@ public class BukkitUI extends javax.swing.JFrame {
                     .addComponent(jLabel34)
                     .addComponent(ambientLimitTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel33)
-                    .addComponent(waterAnimalTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(waterAnimalLimitTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         jPanel25.setBorder(javax.swing.BorderFactory.createTitledBorder("Chunk GC"));
@@ -1272,7 +1617,7 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(loadThresholdTxtBox)
-                    .addComponent(gcPeriodInTicksTxtBox))
+                    .addComponent(gcPeriodInTicksTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel25Layout.setVerticalGroup(
@@ -1318,7 +1663,7 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addComponent(jLabel38)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ticksPerMonsterSpawnTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(jLabel39)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ticksPerAutoSave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1346,7 +1691,7 @@ public class BukkitUI extends javax.swing.JFrame {
         jLabel40.setForeground(new java.awt.Color(255, 255, 255));
         jLabel40.setText("Host: ");
 
-        jTextField5.setText("dl.bukkit.org");
+        autoUpdaterHost.setText("dl.bukkit.org");
 
         javax.swing.GroupLayout jPanel27Layout = new javax.swing.GroupLayout(jPanel27);
         jPanel27.setLayout(jPanel27Layout);
@@ -1358,7 +1703,7 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel40)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField5)
+                .addComponent(autoUpdaterHost)
                 .addGap(18, 18, 18))
         );
         jPanel27Layout.setVerticalGroup(
@@ -1366,12 +1711,10 @@ public class BukkitUI extends javax.swing.JFrame {
             .addGroup(jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(autoUpdaterEnabled)
                 .addComponent(jLabel40)
-                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(autoUpdaterHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jButton5.setText("Save...");
-
-        jButton6.setText("Load...");
+        saveBukkitYml.setText("Save...");
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -1387,33 +1730,28 @@ public class BukkitUI extends javax.swing.JFrame {
                     .addGroup(jPanel15Layout.createSequentialGroup()
                         .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jPanel25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6)))
+                        .addComponent(saveBukkitYml)))
                 .addContainerGap())
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel15Layout.createSequentialGroup()
-                        .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jPanel25, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel24, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(124, 124, 124)
-                        .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton5)
-                            .addComponent(jButton6)))
-                    .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(saveBukkitYml)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1425,7 +1763,7 @@ public class BukkitUI extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane2)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -1623,7 +1961,7 @@ public class BukkitUI extends javax.swing.JFrame {
                             .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 499, Short.MAX_VALUE)))
+                        .addGap(0, 494, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -1672,7 +2010,7 @@ public class BukkitUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 836, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(serverStatusLabel)
                         .addGap(18, 18, 18)
@@ -1709,25 +2047,26 @@ public class BukkitUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Other Unimportant Stuff">
     /**
      * Moves frame to new location, depending on where the user drags mouse to.
-     * @param evt 
+     *
+     * @param evt
      */
     private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
-        
+
         int frameX = this.getLocation().x;
         int frameY = this.getLocation().y;
-        
+
         int xMoved = (frameX + evt.getX()) - (frameX + origin.x);
         int yMoved = (frameY + evt.getY()) - (frameY + origin.y);
-        
+
         int x = frameX + xMoved;
         int y = frameY + yMoved;
-        
+
         this.setLocation(x, y);
-        
+
     }//GEN-LAST:event_jPanel1MouseDragged
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
@@ -1753,17 +2092,18 @@ public class BukkitUI extends javax.swing.JFrame {
             }
             settings.save();
             System.exit(1024);
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
     }//GEN-LAST:event_closeBtnActionPerformed
 
     private void minimizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minimizeBtnActionPerformed
         this.setState(JFrame.ICONIFIED);
     }//GEN-LAST:event_minimizeBtnActionPerformed
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Server Controls">
     //========== Server Controls (Basic) ==========\\
-    
+
     private void startServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startServerBtnActionPerformed
         startServer();
     }//GEN-LAST:event_startServerBtnActionPerformed
@@ -1783,7 +2123,7 @@ public class BukkitUI extends javax.swing.JFrame {
     }//GEN-LAST:event_restartServerBtnActionPerformed
 
     //========== Server Controls (Advanced) ==========\\
-    
+
     private void updateServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateServerBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_updateServerBtnActionPerformed
@@ -1796,12 +2136,12 @@ public class BukkitUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_serverPropertiesBtnActionPerformed
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Preferences">
     //========== BukkitUI Settings ==========\\
-    
+
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        settings.setLayout(BukkitUI_Layout.valueOf(jComboBox1.getSelectedItem().toString())); 
+        settings.setLayout(BukkitUI_Layout.valueOf(jComboBox1.getSelectedItem().toString()));
         this.backgroundImage.setIcon(new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/design_layout/" + settings.getLayout() + ".png")));
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
@@ -1828,15 +2168,120 @@ public class BukkitUI extends javax.swing.JFrame {
     }//GEN-LAST:event_autoDetectNewPluginsCheckboxActionPerformed
 
     private void checkForUpdatesCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkForUpdatesCheckboxActionPerformed
-        settings.setCheckForUpdates(checkForUpdatesCheckbox.isSelected()); 
+        settings.setCheckForUpdates(checkForUpdatesCheckbox.isSelected());
     }//GEN-LAST:event_checkForUpdatesCheckboxActionPerformed
-
     //<< End of Control Methods >>\\
     //</editor-fold>
-    
+
+    //<editor-fold defaultstate="collapsed" desc="Listing Methods">
+    private void addBannedIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBannedIPActionPerformed
+        ListModel model = bannedIPList.getModel();
+        DefaultListModel newModel = new DefaultListModel();
+        if (jTextField1.getText() == null || jTextField1.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please enter an IP address.", "Enter IP Address", JOptionPane.WARNING_MESSAGE);
+        } else {
+            for (int i = 0; i < model.getSize(); i++) {
+                newModel.addElement(model.getElementAt(i));
+            }
+            newModel.addElement(jTextField1.getText());
+            bannedIPList.setModel(newModel);
+        }
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(settings.getServerDir() + "/banned-ips.txt")));
+            for (int i = 0; i < newModel.getSize(); i++) {
+                writer.write(newModel.getElementAt(i).toString() + "\n");
+            }
+            writer.close();
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while writing new banned IP to file!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
+    }//GEN-LAST:event_addBannedIPActionPerformed
+
+    private void addBannedPlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBannedPlayerActionPerformed
+        ListModel model = bannedPlayersList.getModel();
+        DefaultListModel newModel = new DefaultListModel();
+        if (jTextField2.getText() == null || jTextField2.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please enter a player name.", "Enter Player Name", JOptionPane.WARNING_MESSAGE);
+        } else {
+
+            for (int i = 0; i < model.getSize(); i++) {
+                newModel.addElement(model.getElementAt(i));
+            }
+            newModel.addElement(jTextField2.getText());
+            bannedPlayersList.setModel(newModel);
+        }
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(settings.getServerDir() + "/banned-players.txt")));
+            for (int i = 0; i < newModel.getSize(); i++) {
+                writer.write(newModel.getElementAt(i).toString() + "\n");
+            }
+            writer.close();
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while writing new banned IP to file!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
+    }//GEN-LAST:event_addBannedPlayerActionPerformed
+
+    private void addOperatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addOperatorActionPerformed
+        ListModel model = operatorsList.getModel();
+        DefaultListModel newModel = new DefaultListModel();
+        if (jTextField3.getText() == null || jTextField3.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please enter a player name.", "Enter Player Name", JOptionPane.WARNING_MESSAGE);
+        } else {
+
+            for (int i = 0; i < model.getSize(); i++) {
+                newModel.addElement(model.getElementAt(i));
+            }
+            newModel.addElement(jTextField3.getText());
+            operatorsList.setModel(newModel);
+        }
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(settings.getServerDir() + "/ops.txt")));
+            for (int i = 0; i < newModel.getSize(); i++) {
+                writer.write(newModel.getElementAt(i).toString() + "\n");
+            }
+            writer.close();
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while writing new banned IP to file!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
+    }//GEN-LAST:event_addOperatorActionPerformed
+
+    private void addWhiteListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWhiteListActionPerformed
+        ListModel model = whitelist.getModel();
+        DefaultListModel newModel = new DefaultListModel();
+        if (jTextField4.getText() == null || jTextField4.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please enter a player name.", "Enter Player Name", JOptionPane.WARNING_MESSAGE);
+        } else {
+            for (int i = 0; i < model.getSize(); i++) {
+                newModel.addElement(model.getElementAt(i) + "\n");
+            }
+            newModel.addElement(jTextField4.getText());
+            whitelist.setModel(newModel);
+        }
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(settings.getServerDir() + "/white-list.txt")));
+            for (int i = 0; i < newModel.getSize(); i++) {
+                writer.write(newModel.getElementAt(i).toString());
+            }
+            writer.close();
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while writing new banned IP to file!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
+    }//GEN-LAST:event_addWhiteListActionPerformed
+    //</editor-fold>
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        loadServerInfo();
+        playerIO();
+    }//GEN-LAST:event_formWindowActivated
+
     //<< Start of Server Methods and Vars >>\\
     boolean runServer = true;
-    
+
+    //<editor-fold defaultstate="collapsed" desc="Server Methods">
     /**
      * Starts Bukkit Server
      */
@@ -1844,17 +2289,17 @@ public class BukkitUI extends javax.swing.JFrame {
         serverRuntime.setText("Runtime: 00:00:00");
         try {
             if (serverState != ServerState.OFFLINE) {
-                JOptionPane.showMessageDialog(null, "ERROR: The server is not offline! Please make sure the server is offline, before trying to start it.", 
+                JOptionPane.showMessageDialog(null, "ERROR: The server is not offline! Please make sure the server is offline, before trying to start it.",
                         "Server is not offline!", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             System.out.println("Starting Craftbukkit...");
             serverStatusLabel.setIcon(WORKING);
             System.out.println("Checking plugins...");
             serverStatusLabel.setText("Starting...");
             serverState = ServerState.STARTING;
-            
+
             File plugins = new File(settings.getServerDir().getAbsolutePath() + "/plugins");
             File jvmMonitor = new File(plugins.getAbsolutePath() + "/JVMMonitor_BukkitUI.jar");
             if (!plugins.exists()) {
@@ -1871,16 +2316,20 @@ public class BukkitUI extends javax.swing.JFrame {
                 input.close();
                 output.close();
             }
-            
+
             System.out.println("Checking server files...");
             File serverProps = new File(settings.getServerDir() + "/server.properties");
-            if (!serverProps.exists())
+            if (!serverProps.exists()) {
                 buildServerProps();
-            
+            }
+
             File bukkitConf = new File(settings.getServerDir() + "/bukkit.yml");
-            if (!bukkitConf.exists())
+            if (!bukkitConf.exists()) {
                 buildBukkitYml(bukkitConf);
-            
+            }
+
+            playerIO();
+
             consoleLog.setText("");
             System.out.println("Preparing arguments...");
             processArgs.clear();
@@ -1888,20 +2337,21 @@ public class BukkitUI extends javax.swing.JFrame {
             processArgs.add("-Xms1536M");
             processArgs.add("-Xmx2048M");
             processArgs.add("-jar");
-            processArgs.add(settings.getCraftbukkit().getAbsolutePath()); 
+            processArgs.add(settings.getCraftbukkit().getAbsolutePath());
             processArgs.add("--nojline");
             System.out.println("Args list:");
-            for (String str : processArgs)
+            for (String str : processArgs) {
                 System.out.println("\t" + str);
+            }
 
             process = new ProcessBuilder(processArgs);
             process.directory(settings.getServerDir());
             process.redirectErrorStream(true);
-        
+
             System.out.println("Starting process...");
             pr = process.start();
             runServer = true;
-            
+
             System.out.println("Fetching streams...");
             processReader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
             processWriter = new BufferedWriter(new OutputStreamWriter(pr.getOutputStream()));
@@ -1911,12 +2361,12 @@ public class BukkitUI extends javax.swing.JFrame {
             serverStatusLabel.setIcon(OFFLINE);
             serverStatusLabel.setText("OFFLINE");
             serverState = ServerState.OFFLINE;
-            JOptionPane.showMessageDialog(null, "ERROR: Error while starting the server!\n" + ex.toString() + 
-                    "\n The stack trace was printed to the console.", "Error Starting Server!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "ERROR: Error while starting the server!\n" + ex.toString()
+                    + "\n The stack trace was printed to the console.", "Error Starting Server!", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace(System.err);
         }
     }
-    
+
     private void monitorServer() {
         new Thread() {
             @Override
@@ -1934,23 +2384,27 @@ public class BukkitUI extends javax.swing.JFrame {
                                 monitorServerRuntime();
                             }
                             if (line.toLowerCase().contains("logged in")) {
-                                String[] arr = line.split("[INFO] "), arr0 = arr[1].split(" ");
-                                String[] ip0 = arr0[1].split("[/"), ip1 = ip0[1].split("]");
+                                String[] arr = line.split("\\[INFO] ");
+                                String[] arr0 = arr[1].split(" ");
+                                String[] ip0 = arr0[1].split("\\[/"), ip1 = ip0[1].split("]");
                                 System.out.println("User logged in: " + arr0[0]);
                                 System.out.println("User IP-Address: " + ip1[0]);
-                                listOfPlayers.add(new Player(arr0[0], false, ip1[0])); 
+                                listOfPlayers.add(new Player(arr0[0], false, ip1[0]));
                             }
                             if (line.toLowerCase().contains("disconnect.")) {
-                                String[] arr = line.split("[INFO] "), arr0 = arr[1].split(" ");
+                                String[] arr = line.split("\\[INFO] "), arr0 = arr[1].split(" ");
                                 System.out.println(arr0[0] + " has left.");
-                                for (Player player : listOfPlayers) {
-                                    if (player.toString().equals(arr0[0]))
-                                        listOfPlayers.remove(player);
+                                for (int i = 0; i < listOfPlayers.size(); i++) {
+                                    if (listOfPlayers.get(i).toString().equals(arr0[0])) {
+                                        listOfPlayers.remove(i);
+                                        break;
+                                    }
                                 }
                             }
                             imageMap = createPlayerImageMap();
                             loadPlayers();
-                            
+                            playerList.setCellRenderer(new PlayerListCellRenderer());
+
                         } else {
                             if (line.contains("processCPULoad=")) {
                                 System.out.println("JVM Info: " + line);
@@ -1976,7 +2430,7 @@ public class BukkitUI extends javax.swing.JFrame {
                                 usedMemProgressBar.setString("used Memory: " + mem[1] + "MB");
                                 usedMemProgressBar.setValue(Integer.valueOf(mem[1]));
                             }
-                            
+
                         }
                     }
                     serverStatusLabel.setIcon(OFFLINE);
@@ -1984,20 +2438,23 @@ public class BukkitUI extends javax.swing.JFrame {
                     serverState = ServerState.OFFLINE;
                 } catch (Exception ex) {
                     serverStatusLabel.setIcon(OFFLINE);
-                    serverStatusLabel.setText("OFFLINE");
+                    serverStatusLabel.setText("OFFLINE: ERROR");
                     serverState = ServerState.OFFLINE;
                     JOptionPane.showMessageDialog(null, "ERROR: An error occured while trying to read from the server!\n" + ex.toString() + "\nThe server will now be destroyed.", "Destroying Process!", JOptionPane.ERROR_MESSAGE);
+                    System.err.println("ERROR: An error occured while trying to read from the server!\n" + ex.toString() + "\nThe server will now be destroyed.");
+                    ex.printStackTrace(System.err);
                     killServer();
                 }
             }
         }.start();
     }
-    
+
     private void monitorServerRuntime() {
         new Thread() {
             private int seconds = 0;
             private int minutes = 0;
             private long hours = 0;
+
             @Override
             public void run() {
                 try {
@@ -2024,7 +2481,7 @@ public class BukkitUI extends javax.swing.JFrame {
             }
         }.start();
     }
-    
+
     private void stopServer() {
         System.out.print("Stopping server...");
         try {
@@ -2037,21 +2494,22 @@ public class BukkitUI extends javax.swing.JFrame {
             serverState = ServerState.OFFLINE;
         } catch (IOException | InterruptedException ex) {
             JOptionPane.showMessageDialog(null, "ERROR: An error occured while attempting to \"kindly\" stop the server.\n" + ex.toString()
-                    + "\nIt will now be destroyed.", 
+                    + "\nIt will now be destroyed.",
                     "Error Stopping Server", JOptionPane.ERROR_MESSAGE);
             killServer();
         }
     }
-    
+
     private void killServer() {
+        runServer = false;
         pr.destroy();
     }
-    
+
     private void buildServerProps() {
         BufferedWriter writer = null;
         try {
-            String props =
-                    "# Minecraft Server Properties\n"
+            String props
+                    = "# Minecraft Server Properties\n"
                     + "# Generated by BukkitUI\n"
                     + "# Build Date: " + new Date().toLocaleString() + "\n"
                     + "allow-nether=" + allowNether.isSelected() + "\n"
@@ -2076,7 +2534,7 @@ public class BukkitUI extends javax.swing.JFrame {
                     + "generate-structures=" + generateStructures.isSelected() + "\n"
                     + "view-distance=" + viewDistance.getText() + "\n"
                     + "motd=" + motd.getName();
-            File serverProps = new File("/server.properties");
+            File serverProps = new File(settings.getServerDir() + "/server.properties");
             writer = new BufferedWriter(new FileWriter(serverProps));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "ERROR: An error occured while attempting to write the server properties file.\n"
@@ -2084,23 +2542,160 @@ public class BukkitUI extends javax.swing.JFrame {
             ex.printStackTrace(System.err);
         }
     }
-    
+
     private void buildBukkitYml(File f) {
         try {
             f.createNewFile();
             BufferedWriter writer = new BufferedWriter(new FileWriter(f));
             writer.write(
-                              "# Main Bukkit Config File\n"
-                            + "# For a reference on how to configure, visit http://wiki.bukkit.org/Bukkit.yml\n"
-                                      + "# Generated by BukkitUI at " + new Date().toLocaleString()
-                                      + "");
+                    "# Main Bukkit Config File\n"
+                    + "# For a reference on how to configure, visit http://wiki.bukkit.org/Bukkit.yml\n"
+                    + "# Generated by BukkitUI at " + new Date().toLocaleString() + "\n"
+                    + "settings:\n"
+                    + "  allow-end: " + allowEnd.isSelected() + "\n"
+                    + "  warn-on-overload: " + warnOnOverload.isSelected() + "\n"
+                    + "  permissions-file: " + permsFileTxtBox.getText() + "\n"
+                    + "  update-folder: " + updateFolderTxtBox.getText() + "\n"
+                    + "  ping-packet-limit: " + pingLimitTxtBox.getText() + "\n"
+                    + "  use-exact-login-location: " + useExactLocation.isSelected() + "\n"
+                    + "  plugin-profiling: " + pluginProfiling.isSelected() + "\n"
+                    + "  connection-throttle: " + connectionThrottleTxtBox.getText() + "\n"
+                    + "  query-plugins: " + queryPlugins.isSelected() + "\n"
+                    + "  deprecated-verbose: " + deprecatedVerbose.getSelectedItem() + "\n"
+                    + "  shutdown-message: " + shutdownMessageTxtBox.getText() + "\n"
+                    + "spawn-limits:\n"
+                    + "  monsters: " + monsterLimitTxtBox.getText() + "\n"
+                    + "  animals: " + animalLimitTxtBox.getText() + "\n"
+                    + "  water-animals: " + waterAnimalLimitTxtBox.getText() + "\n"
+                    + "  ambient: " + ambientLimitTxtBox.getText() + "\n"
+                    + "chunk-gc:\n"
+                    + "  period-in-ticks: " + gcPeriodInTicksTxtBox.getText() + "\n"
+                    + "  load-threshold: " + loadThresholdTxtBox.getText() + "\n"
+                    + "ticks-per:\n"
+                    + "  animal-spawns: " + ticksPerAnimalSpawnTxtBox.getText() + "\n"
+                    + "  monster-spawns: " + ticksPerMonsterSpawnTxtBox.getText() + "\n"
+                    + "  autosave: " + ticksPerAutoSave.getText() + "\n"
+                    + "auto-updater:\n"
+                    + "  enabled: " + autoUpdaterEnabled.isSelected() + "\n"
+                    + "  on-broken:\n"
+                    + "  - warn-console\n"
+                    + "  - warn-ops\n"
+                    + "  on-update:\n"
+                    + "  - warn-console\n"
+                    + "  - warn-ops\n"
+                    + "  preferred-channel: rb\n"
+                    + "  host: " + autoUpdaterHost.getText() + "\n"
+                    + "  suggest-channels: true\n"
+                    + "database:\n"
+                    + "  username: bukkit\n"
+                    + "  isolation: SERIALIZABLE\n"
+                    + "  driver: org.sqlite.JDBC\n"
+                    + "  password: walrus\n"
+                    + "  url: jdbc:sqlite:{DIR}{NAME}.db\n");
         } catch (IOException ex) {
-            
+            System.err.println("ERROR: Error while writing to bukkit.yml!\n" + ex.toString());
+            ex.printStackTrace(System.err);
         }
     }
-    
+
+    private void playerIO() {
+        Thread bannedIPs = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (runServer) {
+                        DefaultListModel model = new DefaultListModel();
+                        File bannedIPs = new File(settings.getServerDir() + "/banned-ips.txt");
+                        BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            model.addElement(line);
+                        }
+                        bannedIPList.setModel(model);
+                        Thread.sleep(10000);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("ERROR: An error occured while reading banned IPs! The next try will occur on next server boot...\n" + ex.toString());
+                    ex.printStackTrace(System.err);
+                }
+            }
+        };
+        //===============================\\
+        Thread bannedPlayers = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (runServer) {
+                        DefaultListModel model = new DefaultListModel();
+                        File bannedIPs = new File(settings.getServerDir() + "/banned-players.txt");
+                        BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            model.addElement(line);
+                        }
+                        bannedPlayersList.setModel(model);
+                        Thread.sleep(10000);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("ERROR: An error occured while reading banned IPs! The next try will occur on next server boot...\n" + ex.toString());
+                    ex.printStackTrace(System.err);
+                }
+            }
+        };
+        //===============================\\
+        Thread operators = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (runServer) {
+                        DefaultListModel model = new DefaultListModel();
+                        File bannedIPs = new File(settings.getServerDir() + "/ops.txt");
+                        BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            model.addElement(line);
+                        }
+                        operatorsList.setModel(model);
+                        Thread.sleep(10000);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("ERROR: An error occured while reading banned IPs! The next try will occur on next server boot...\n" + ex.toString());
+                    ex.printStackTrace(System.err);
+                }
+            }
+        };
+        //===============================\\
+        Thread whiteListReader = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (runServer) {
+                        DefaultListModel model = new DefaultListModel();
+                        File bannedIPs = new File(settings.getServerDir() + "/white-list.txt");
+                        BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            model.addElement(line);
+                        }
+                        whitelist.setModel(model);
+                        Thread.sleep(10000);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("ERROR: An error occured while reading banned IPs! The next try will occur on next server boot...\n" + ex.toString());
+                    ex.printStackTrace(System.err);
+                }
+            }
+        };
+        //===============================\\
+        bannedIPs.start();
+        bannedPlayers.start();
+        operators.start();
+        whiteListReader.start();
+    }
+    //</editor-fold>
+
     //========== Player Management ==========\\
-    
+    //<editor-fold defaultstate="collapsed" desc="      ">
     private Map<String, ImageIcon> createPlayerImageMap() {
         Map<String, ImageIcon> map = new HashMap<>();
         try {
@@ -2111,10 +2706,11 @@ public class BukkitUI extends javax.swing.JFrame {
                     map.put(player.toString(), new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/player_icons/player_online.png")));
                 }
             }
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
         return map;
     }
-    
+
     private void loadPlayers() {
         DefaultListModel model = new DefaultListModel();
         int index = 0;
@@ -2122,17 +2718,27 @@ public class BukkitUI extends javax.swing.JFrame {
             model.add(index, player.toString());
             index++;
         }
+        playerList.setModel(model);
     }
-    
+    //</editor-fold>
+
     //<editor-fold defaultstate="collapsed" desc="Variables.">
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addBannedIP;
+    private javax.swing.JButton addBannedPlayer;
+    private javax.swing.JButton addOperator;
+    private javax.swing.JButton addWhiteList;
+    private javax.swing.JCheckBox allowEnd;
     private javax.swing.JCheckBox allowFlight;
     private javax.swing.JCheckBox allowNether;
     private javax.swing.JTextField ambientLimitTxtBox;
     private javax.swing.JTextField animalLimitTxtBox;
     private javax.swing.JCheckBox autoDetectNewPluginsCheckbox;
     private javax.swing.JCheckBox autoUpdaterEnabled;
+    private javax.swing.JTextField autoUpdaterHost;
     private javax.swing.JLabel backgroundImage;
+    private javax.swing.JList bannedIPList;
+    private javax.swing.JList bannedPlayersList;
     private javax.swing.JCheckBox checkForUpdatesCheckbox;
     private javax.swing.JButton closeBtn;
     private javax.swing.JTextField connectionThrottleTxtBox;
@@ -2151,13 +2757,6 @@ public class BukkitUI extends javax.swing.JFrame {
     private javax.swing.JComboBox gameMode;
     private javax.swing.JTextField gcPeriodInTicksTxtBox;
     private javax.swing.JCheckBox generateStructures;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -2199,11 +2798,6 @@ public class BukkitUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
-    private javax.swing.JList jList3;
-    private javax.swing.JList jList4;
-    private javax.swing.JList jList5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -2243,7 +2837,6 @@ public class BukkitUI extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField levelName;
     private javax.swing.JTextField levelSeed;
     private javax.swing.JComboBox levelType;
@@ -2256,11 +2849,14 @@ public class BukkitUI extends javax.swing.JFrame {
     private javax.swing.JTextField monsterLimitTxtBox;
     private javax.swing.JTextField motd;
     private javax.swing.JCheckBox onlineMode;
+    private javax.swing.JList operatorsList;
     private javax.swing.JTextField permsFileTxtBox;
     private javax.swing.JTextField pingLimitTxtBox;
+    private javax.swing.JList playerList;
     private javax.swing.JCheckBox pluginProfiling;
     private javax.swing.JCheckBox queryPlugins;
     private javax.swing.JButton restartServerBtn;
+    private javax.swing.JButton saveBukkitYml;
     private javax.swing.JTextField serverIP;
     private javax.swing.JTextField serverPort;
     private javax.swing.JButton serverPropertiesBtn;
@@ -2283,14 +2879,17 @@ public class BukkitUI extends javax.swing.JFrame {
     private javax.swing.JProgressBar usedMemProgressBar;
     private javax.swing.JTextField viewDistance;
     private javax.swing.JCheckBox warnOnOverload;
-    private javax.swing.JTextField waterAnimalTxtBox;
+    private javax.swing.JTextField waterAnimalLimitTxtBox;
     private javax.swing.JCheckBox whiteList;
+    private javax.swing.JList whitelist;
     // End of variables declaration//GEN-END:variables
 //</editor-fold>
-    
+
     //========== Internal Classes ===========\\    
+    //<editor-fold defaultstate="collapsed" desc="      ">
     /**
      * Custom list cell renderer for player list.
+     *
      * @author beatsleigher
      */
     public class PlayerListCellRenderer extends DefaultListCellRenderer {
@@ -2304,5 +2903,6 @@ public class BukkitUI extends javax.swing.JFrame {
         }
 
     }
-    
+    //</editor-fold>
+
 }
