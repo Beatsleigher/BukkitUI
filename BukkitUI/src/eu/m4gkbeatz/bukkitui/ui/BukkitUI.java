@@ -29,8 +29,6 @@ import eu.m4gkbeatz.bukkitui.settings.*;
 import eu.m4gkbeatz.bukkitui.io.*;
 import eu.m4gkbeatz.bukkitui.server.players.Player;
 
-import org.yaml.snakeyaml.Yaml;
-
 /**
  *
  * @author beatsleigher
@@ -81,6 +79,7 @@ public class BukkitUI extends javax.swing.JFrame {
         initComponents();
         backgroundImage.setIcon(new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/design_layout/" + settings.getLayout() + ".png")));
         applySettings();
+        loadServerInfo();
     }
     //</editor-fold>
 
@@ -2274,7 +2273,6 @@ public class BukkitUI extends javax.swing.JFrame {
     //</editor-fold>
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        loadServerInfo();
         playerIO();
     }//GEN-LAST:event_formWindowActivated
 
@@ -2285,6 +2283,7 @@ public class BukkitUI extends javax.swing.JFrame {
     /**
      * Starts Bukkit Server
      */
+    //<editor-fold defaultstate="collapsed" desc="Big Methods">
     private void startServer() {
         serverRuntime.setText("Runtime: 00:00:00");
         try {
@@ -2499,6 +2498,7 @@ public class BukkitUI extends javax.swing.JFrame {
             killServer();
         }
     }
+    //</editor-fold>
 
     private void killServer() {
         runServer = false;
@@ -2507,6 +2507,9 @@ public class BukkitUI extends javax.swing.JFrame {
 
     private void buildServerProps() {
         BufferedWriter writer = null;
+        File serverProps = null;
+        System.out.println(settings.getServerDir());
+        serverProps = new File(settings.getServerDir() + "/server.properties");
         try {
             String props
                     = "# Minecraft Server Properties\n"
@@ -2534,13 +2537,16 @@ public class BukkitUI extends javax.swing.JFrame {
                     + "generate-structures=" + generateStructures.isSelected() + "\n"
                     + "view-distance=" + viewDistance.getText() + "\n"
                     + "motd=" + motd.getName();
-            File serverProps = new File(settings.getServerDir() + "/server.properties");
+            serverProps.createNewFile();
             writer = new BufferedWriter(new FileWriter(serverProps));
+            writer.close();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "ERROR: An error occured while attempting to write the server properties file.\n"
                     + "The stack trace was printed to the console.", "Error Writing server.properties", JOptionPane.ERROR_MESSAGE);
+            System.err.println(ex.toString());
             ex.printStackTrace(System.err);
         }
+        
     }
 
     private void buildBukkitYml(File f) {
@@ -2592,6 +2598,7 @@ public class BukkitUI extends javax.swing.JFrame {
                     + "  driver: org.sqlite.JDBC\n"
                     + "  password: walrus\n"
                     + "  url: jdbc:sqlite:{DIR}{NAME}.db\n");
+            writer.close();
         } catch (IOException ex) {
             System.err.println("ERROR: Error while writing to bukkit.yml!\n" + ex.toString());
             ex.printStackTrace(System.err);
@@ -2603,16 +2610,18 @@ public class BukkitUI extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    while (runServer) {
-                        DefaultListModel model = new DefaultListModel();
-                        File bannedIPs = new File(settings.getServerDir() + "/banned-ips.txt");
-                        BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
-                        String line = "";
-                        while ((line = reader.readLine()) != null) {
-                            model.addElement(line);
+                    File bannedIPs = new File(settings.getServerDir() + "/banned-ips.txt");
+                    if (bannedIPs.exists()) {
+                        while (runServer) {
+                            DefaultListModel model = new DefaultListModel();
+                            BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
+                            String line = "";
+                            while ((line = reader.readLine()) != null) {
+                                model.addElement(line);
+                            }
+                            bannedIPList.setModel(model);
+                            Thread.sleep(10000);
                         }
-                        bannedIPList.setModel(model);
-                        Thread.sleep(10000);
                     }
                 } catch (Exception ex) {
                     System.err.println("ERROR: An error occured while reading banned IPs! The next try will occur on next server boot...\n" + ex.toString());
@@ -2625,16 +2634,19 @@ public class BukkitUI extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    while (runServer) {
-                        DefaultListModel model = new DefaultListModel();
-                        File bannedIPs = new File(settings.getServerDir() + "/banned-players.txt");
-                        BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
-                        String line = "";
-                        while ((line = reader.readLine()) != null) {
-                            model.addElement(line);
+                    File bannedIPs = new File(settings.getServerDir() + "/banned-players.txt");
+                    if (bannedIPs.exists()) {
+                        while (runServer) {
+                            DefaultListModel model = new DefaultListModel();
+
+                            BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
+                            String line = "";
+                            while ((line = reader.readLine()) != null) {
+                                model.addElement(line);
+                            }
+                            bannedPlayersList.setModel(model);
+                            Thread.sleep(10000);
                         }
-                        bannedPlayersList.setModel(model);
-                        Thread.sleep(10000);
                     }
                 } catch (Exception ex) {
                     System.err.println("ERROR: An error occured while reading banned IPs! The next try will occur on next server boot...\n" + ex.toString());
@@ -2647,16 +2659,19 @@ public class BukkitUI extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    while (runServer) {
-                        DefaultListModel model = new DefaultListModel();
-                        File bannedIPs = new File(settings.getServerDir() + "/ops.txt");
-                        BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
-                        String line = "";
-                        while ((line = reader.readLine()) != null) {
-                            model.addElement(line);
+                    File bannedIPs = new File(settings.getServerDir() + "/ops.txt");
+                    if (bannedIPs.exists()) {
+                        while (runServer) {
+                            DefaultListModel model = new DefaultListModel();
+
+                            BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
+                            String line = "";
+                            while ((line = reader.readLine()) != null) {
+                                model.addElement(line);
+                            }
+                            operatorsList.setModel(model);
+                            Thread.sleep(10000);
                         }
-                        operatorsList.setModel(model);
-                        Thread.sleep(10000);
                     }
                 } catch (Exception ex) {
                     System.err.println("ERROR: An error occured while reading banned IPs! The next try will occur on next server boot...\n" + ex.toString());
@@ -2669,16 +2684,19 @@ public class BukkitUI extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    while (runServer) {
-                        DefaultListModel model = new DefaultListModel();
-                        File bannedIPs = new File(settings.getServerDir() + "/white-list.txt");
-                        BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
-                        String line = "";
-                        while ((line = reader.readLine()) != null) {
-                            model.addElement(line);
+                    File bannedIPs = new File(settings.getServerDir() + "/white-list.txt");
+                    if (bannedIPs.exists()) {
+                        while (runServer) {
+                            DefaultListModel model = new DefaultListModel();
+
+                            BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
+                            String line = "";
+                            while ((line = reader.readLine()) != null) {
+                                model.addElement(line);
+                            }
+                            whitelist.setModel(model);
+                            Thread.sleep(10000);
                         }
-                        whitelist.setModel(model);
-                        Thread.sleep(10000);
                     }
                 } catch (Exception ex) {
                     System.err.println("ERROR: An error occured while reading banned IPs! The next try will occur on next server boot...\n" + ex.toString());

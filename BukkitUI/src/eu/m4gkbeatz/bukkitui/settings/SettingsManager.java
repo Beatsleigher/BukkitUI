@@ -19,7 +19,11 @@
 
 package eu.m4gkbeatz.bukkitui.settings;
 
+import eu.m4gkbeatz.bukkitui.io.JarFilter;
 import java.io.*;
+import java.net.*;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  * Manages the settings used in and by BukkitUI.
@@ -34,7 +38,8 @@ public class SettingsManager {
     boolean startServerAutomatically = true;
     boolean autoDetectNewPlugins = true;
     boolean checkForUpdates = true;
-    File serverDir = null;
+    URL primeLocation = SettingsManager.class.getProtectionDomain().getCodeSource().getLocation();
+    File serverDir = new File(primeLocation.getFile());
     File craftbukkit = null;
     BukkitUI_Layout layout = BukkitUI_Layout.BukkitUI;
     File java = new File(System.getProperty("java.home") + "/bin/java");
@@ -140,6 +145,21 @@ public class SettingsManager {
         BufferedReader reader = null;
         String line = "";
         if (!prefs.exists()) {
+            JOptionPane.showMessageDialog(null, "INFORMATION: It seems as though you're using BukkitUI for the first time.\n"
+                    + "To ensure correct functionality, after this message, you will be prompted to select the JAR-File for your Bukkit server.\n"
+                    + "After you have done that, BukkitUI will take care of the rest.\n"
+                    + "Enjoy :)", "Starting for the First Time, Eh?", JOptionPane.INFORMATION_MESSAGE);
+            JFileChooser jarChooser = new JFileChooser();
+            jarChooser.setDialogTitle("Select Your Server.Jar");
+            jarChooser.setMultiSelectionEnabled(false);
+            jarChooser.setApproveButtonText("Use this Jar");
+            jarChooser.setFileFilter(new JarFilter());
+            int dialogResult = jarChooser.showOpenDialog(null);
+            if (dialogResult == JOptionPane.OK_OPTION) {
+                setCraftbukkit(jarChooser.getSelectedFile());
+                setServerDir(jarChooser.getSelectedFile().getParentFile());
+            }
+            
             System.out.println("Settings file doesn't exist. Creating...");
             prefs.getParentFile().mkdirs();
             prefs.createNewFile();
@@ -178,7 +198,8 @@ public class SettingsManager {
                 if (line.contains("name=serverDir")) {
                     System.out.print("Found pref: serverDir");
                     String[] arr = line.split("value="), arr0 = arr[1].split("]");
-                    serverDir = new File(arr0[0]);
+                    if (arr0[0] != null)
+                        serverDir = new File(arr0[0]);
                     System.out.println(" = " + arr0[0]);
                     continue;
                 }
@@ -225,7 +246,7 @@ public class SettingsManager {
     
     public boolean checkForUpdates() { return checkForUpdates; }
     
-    public File getServerDir() { return serverDir; }
+    public File getServerDir() { if (serverDir.toString().endsWith("BukkitUI.jar")) { return serverDir.getParentFile(); } else return serverDir; }
     
     public File getCraftbukkit() { return craftbukkit; }
     
