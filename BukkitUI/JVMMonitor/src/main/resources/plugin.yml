@@ -1,0 +1,3 @@
+name: BukkitUI_Java_VM_Monitor
+main: eu.m4gkbeatz.bukkitui.jvm.JVMMonitor
+version: 1.0.0.0
