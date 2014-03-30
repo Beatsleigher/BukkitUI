@@ -46,7 +46,7 @@ pref::[name=checkForUpdates, value=true]
 # this setting is incorrect, then the entire     #
 # program will fail.                             #
 ##################################################
-pref::[name=serverDir, value=/home/beatsleigher/code/Java/BukkitUI/BukkitUI/build/classes]
+pref::[name=serverDir, value=/home/beatsleigher/Tekkit_Server_3.1.2]
 
 ##################################################
 # Preference "craftbukkit"                     #
@@ -54,14 +54,14 @@ pref::[name=serverDir, value=/home/beatsleigher/code/Java/BukkitUI/BukkitUI/buil
 # Bukkit server JAR. If this setting is wrong,   #
 # then the program will be flooded with errors.  #
 ##################################################
-pref::[name=craftbukkit, value=null]
+pref::[name=craftbukkit, value=/home/beatsleigher/Tekkit_Server_3.1.2/Tekkit.jar]
 
 ##################################################
 # Preference "layout"                          #
 # This setting controls the look of BukkitUI's   #
 # main user interface.                           #
 ##################################################
-pref::[name=layout, value=BukkitUI]
+pref::[name=layout, value=BukkitUI_orange]
 
 ##################################################
 # Preference "java"                            #

@@ -1,23 +1,23 @@
 /*
- * Copyright (C) 2014 beatsleigher.
+ * Copyright (C) 2014 beatsleigher
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301  USA
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.m4gkbeatz.bukkitui.ui;
 
+import com.sun.glass.events.KeyEvent;
+import eu.m4gkbeatz.bukkitui.help.CommandHelp;
 import javax.swing.*;
 import java.io.*;
 import java.awt.Point;
@@ -34,7 +34,7 @@ import eu.m4gkbeatz.bukkitui.server.players.Player;
  * @author beatsleigher
  */
 @SuppressWarnings({"TooBroadCatch", "ConvertToTryWithResources", "UnusedAssignment", "UseSpecificCatch", "SleepWhileInLoop"})
-public class BukkitUI extends javax.swing.JFrame {
+public class BukkitUI extends JFrame {
 
     //============ Constant Values ============\\
     private final ImageIcon ONLINE = new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/circle_green_24.png"));
@@ -63,6 +63,14 @@ public class BukkitUI extends javax.swing.JFrame {
     List<String> processArgs = new ArrayList();
     ServerState serverState = ServerState.OFFLINE;
     List<Player> listOfPlayers = new ArrayList<>();
+    //=============================================\\
+    boolean CTRL_PRESSED = false;
+    boolean B_PRESSED = false;
+    boolean H_PRESSED = false;
+    boolean C_PRESSED = false;
+    boolean S_PRESSED = false;
+    boolean SHFT_PRESSED = false;
+    boolean R_PRESSED = false;
 
     //<editor-fold defaultstate="collapsed" desc="Constructor">
     /**
@@ -80,9 +88,11 @@ public class BukkitUI extends javax.swing.JFrame {
         backgroundImage.setIcon(new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/design_layout/" + settings.getLayout() + ".png")));
         applySettings();
         loadServerInfo();
+        serverProgress.setVisible(false);
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="More Big Methods...">
     private void applySettings() {
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         for (Object obj : BukkitUI_Layout.values()) {
@@ -442,6 +452,7 @@ public class BukkitUI extends javax.swing.JFrame {
             ex.printStackTrace(System.err);
         }
     }
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Some Generated Code. Nothing too Important...">
     /**
@@ -463,7 +474,6 @@ public class BukkitUI extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         updateServerBtn = new javax.swing.JButton();
         deleteServerBtn = new javax.swing.JButton();
-        serverPropertiesBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
@@ -610,6 +620,7 @@ public class BukkitUI extends javax.swing.JFrame {
         closeBtn = new javax.swing.JButton();
         minimizeBtn = new javax.swing.JButton();
         serverRuntime = new javax.swing.JLabel();
+        serverProgress = new javax.swing.JProgressBar();
         backgroundImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -718,15 +729,6 @@ public class BukkitUI extends javax.swing.JFrame {
             }
         });
 
-        serverPropertiesBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/server_administration/settings2-32.png"))); // NOI18N
-        serverPropertiesBtn.setText("Properties");
-        serverPropertiesBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        serverPropertiesBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                serverPropertiesBtnActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -735,9 +737,8 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(updateServerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(deleteServerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(serverPropertiesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(deleteServerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -746,8 +747,6 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addComponent(updateServerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deleteServerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(serverPropertiesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -899,9 +898,9 @@ public class BukkitUI extends javax.swing.JFrame {
         consoleLog.setEditable(false);
         consoleLog.setBackground(new java.awt.Color(0, 101, 255));
         consoleLog.setColumns(20);
-        consoleLog.setForeground(new java.awt.Color(255, 255, 255));
+        consoleLog.setForeground(new java.awt.Color(0, 0, 0));
         consoleLog.setRows(5);
-        consoleLog.setText("-- Not Running --");
+        consoleLog.setText("-- Not Running --\n");
         jScrollPane1.setViewportView(consoleLog);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
@@ -924,7 +923,18 @@ public class BukkitUI extends javax.swing.JFrame {
         jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel9.setOpaque(false);
 
+        executeCmdTxtField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                executeCmdTxtFieldKeyPressed(evt);
+            }
+        });
+
         executeCmdBtn.setText("Execute");
+        executeCmdBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                executeCmdBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -1671,13 +1681,13 @@ public class BukkitUI extends javax.swing.JFrame {
         jPanel26Layout.setVerticalGroup(
             jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel38, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ticksPerMonsterSpawnTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel39)
+                .addComponent(ticksPerAutoSave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(jLabel37)
-                .addComponent(ticksPerAnimalSpawnTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel38, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ticksPerMonsterSpawnTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel39)
-                    .addComponent(ticksPerAutoSave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(ticksPerAnimalSpawnTxtBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel27.setBorder(javax.swing.BorderFactory.createTitledBorder("Auto Updater"));
@@ -1762,7 +1772,7 @@ public class BukkitUI extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
+                .addComponent(jTabbedPane2)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -2002,6 +2012,8 @@ public class BukkitUI extends javax.swing.JFrame {
         serverRuntime.setForeground(new java.awt.Color(255, 255, 255));
         serverRuntime.setText("Runtime: 00:00:00");
 
+        serverProgress.setIndeterminate(true);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -2009,12 +2021,13 @@ public class BukkitUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 836, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(serverStatusLabel)
                         .addGap(18, 18, 18)
                         .addComponent(serverRuntime)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(serverProgress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(minimizeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2032,9 +2045,11 @@ public class BukkitUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(serverStatusLabel)
-                    .addComponent(serverRuntime))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(serverStatusLabel)
+                        .addComponent(serverRuntime))
+                    .addComponent(serverProgress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -2046,6 +2061,18 @@ public class BukkitUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     //</editor-fold>
+    
+    //<< End of Control Methods >>\\
+    
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        playerIO();
+    }//GEN-LAST:event_formWindowActivated
+
+    private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
+        origin = evt.getPoint();
+        getComponentAt(origin);
+    }//GEN-LAST:event_jPanel1MouseClicked
 
     //<editor-fold defaultstate="collapsed" desc="Other Unimportant Stuff">
     /**
@@ -2065,13 +2092,11 @@ public class BukkitUI extends javax.swing.JFrame {
         int y = frameY + yMoved;
 
         this.setLocation(x, y);
-
     }//GEN-LAST:event_jPanel1MouseDragged
 
-    private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
-        origin = evt.getPoint();
-        getComponentAt(origin);
-    }//GEN-LAST:event_jPanel1MouseClicked
+    private void minimizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minimizeBtnActionPerformed
+        this.setState(JFrame.ICONIFIED);
+    }//GEN-LAST:event_minimizeBtnActionPerformed
 
     private void closeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeBtnActionPerformed
         try {
@@ -2095,54 +2120,17 @@ public class BukkitUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_closeBtnActionPerformed
 
-    private void minimizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minimizeBtnActionPerformed
-        this.setState(JFrame.ICONIFIED);
-    }//GEN-LAST:event_minimizeBtnActionPerformed
-    //</editor-fold>
+    private void checkForUpdatesCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkForUpdatesCheckboxActionPerformed
+        settings.setCheckForUpdates(checkForUpdatesCheckbox.isSelected());
+    }//GEN-LAST:event_checkForUpdatesCheckboxActionPerformed
 
-    //<editor-fold defaultstate="collapsed" desc="Server Controls">
-    //========== Server Controls (Basic) ==========\\
+    private void autoDetectNewPluginsCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoDetectNewPluginsCheckboxActionPerformed
+        settings.setAutoDetectNewPlugins(autoDetectNewPluginsCheckbox.isSelected());
+    }//GEN-LAST:event_autoDetectNewPluginsCheckboxActionPerformed
 
-    private void startServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startServerBtnActionPerformed
-        startServer();
-    }//GEN-LAST:event_startServerBtnActionPerformed
-
-    private void stopServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopServerBtnActionPerformed
-        stopServer();
-    }//GEN-LAST:event_stopServerBtnActionPerformed
-
-    private void restartServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartServerBtnActionPerformed
-        try {
-            stopServer();
-            Thread.sleep(500);
-            startServer();
-        } catch (InterruptedException ex) {
-            startServer();
-        }
-    }//GEN-LAST:event_restartServerBtnActionPerformed
-
-    //========== Server Controls (Advanced) ==========\\
-
-    private void updateServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateServerBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_updateServerBtnActionPerformed
-
-    private void deleteServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteServerBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_deleteServerBtnActionPerformed
-
-    private void serverPropertiesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverPropertiesBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_serverPropertiesBtnActionPerformed
-    //</editor-fold>
-
-    //<editor-fold defaultstate="collapsed" desc="Preferences">
-    //========== BukkitUI Settings ==========\\
-
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        settings.setLayout(BukkitUI_Layout.valueOf(jComboBox1.getSelectedItem().toString()));
-        this.backgroundImage.setIcon(new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/design_layout/" + settings.getLayout() + ".png")));
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    private void startServerAutomaticallyCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startServerAutomaticallyCheckboxActionPerformed
+        settings.setStartServerAutomatically(startServerAutomaticallyCheckbox.isSelected());
+    }//GEN-LAST:event_startServerAutomaticallyCheckboxActionPerformed
 
     private void craftbukkitLocationBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_craftbukkitLocationBtnActionPerformed
         JFileChooser jarChooser = new JFileChooser();
@@ -2158,69 +2146,37 @@ public class BukkitUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_craftbukkitLocationBtnActionPerformed
 
-    private void startServerAutomaticallyCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startServerAutomaticallyCheckboxActionPerformed
-        settings.setStartServerAutomatically(startServerAutomaticallyCheckbox.isSelected());
-    }//GEN-LAST:event_startServerAutomaticallyCheckboxActionPerformed
+    //<editor-fold defaultstate="collapsed" desc="Preferences">
+    //========== BukkitUI Settings ==========\\
 
-    private void autoDetectNewPluginsCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoDetectNewPluginsCheckboxActionPerformed
-        settings.setAutoDetectNewPlugins(autoDetectNewPluginsCheckbox.isSelected());
-    }//GEN-LAST:event_autoDetectNewPluginsCheckboxActionPerformed
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        settings.setLayout(BukkitUI_Layout.valueOf(jComboBox1.getSelectedItem().toString()));
+        this.backgroundImage.setIcon(new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/design_layout/" + settings.getLayout() + ".png")));
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
-    private void checkForUpdatesCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkForUpdatesCheckboxActionPerformed
-        settings.setCheckForUpdates(checkForUpdatesCheckbox.isSelected());
-    }//GEN-LAST:event_checkForUpdatesCheckboxActionPerformed
-    //<< End of Control Methods >>\\
-    //</editor-fold>
-
-    //<editor-fold defaultstate="collapsed" desc="Listing Methods">
-    private void addBannedIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBannedIPActionPerformed
-        ListModel model = bannedIPList.getModel();
+    private void addWhiteListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWhiteListActionPerformed
+        ListModel model = whitelist.getModel();
         DefaultListModel newModel = new DefaultListModel();
-        if (jTextField1.getText() == null || jTextField1.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Please enter an IP address.", "Enter IP Address", JOptionPane.WARNING_MESSAGE);
-        } else {
-            for (int i = 0; i < model.getSize(); i++) {
-                newModel.addElement(model.getElementAt(i));
-            }
-            newModel.addElement(jTextField1.getText());
-            bannedIPList.setModel(newModel);
-        }
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(settings.getServerDir() + "/banned-ips.txt")));
-            for (int i = 0; i < newModel.getSize(); i++) {
-                writer.write(newModel.getElementAt(i).toString() + "\n");
-            }
-            writer.close();
-        } catch (Exception ex) {
-            System.err.println("ERROR: Error while writing new banned IP to file!\n" + ex.toString());
-            ex.printStackTrace(System.err);
-        }
-    }//GEN-LAST:event_addBannedIPActionPerformed
-
-    private void addBannedPlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBannedPlayerActionPerformed
-        ListModel model = bannedPlayersList.getModel();
-        DefaultListModel newModel = new DefaultListModel();
-        if (jTextField2.getText() == null || jTextField2.getText().equals("")) {
+        if (jTextField4.getText() == null || jTextField4.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Please enter a player name.", "Enter Player Name", JOptionPane.WARNING_MESSAGE);
         } else {
-
             for (int i = 0; i < model.getSize(); i++) {
-                newModel.addElement(model.getElementAt(i));
+                newModel.addElement(model.getElementAt(i) + "\n");
             }
-            newModel.addElement(jTextField2.getText());
-            bannedPlayersList.setModel(newModel);
+            newModel.addElement(jTextField4.getText());
+            whitelist.setModel(newModel);
         }
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(settings.getServerDir() + "/banned-players.txt")));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(settings.getServerDir() + "/white-list.txt")));
             for (int i = 0; i < newModel.getSize(); i++) {
-                writer.write(newModel.getElementAt(i).toString() + "\n");
+                writer.write(newModel.getElementAt(i).toString());
             }
             writer.close();
         } catch (Exception ex) {
             System.err.println("ERROR: Error while writing new banned IP to file!\n" + ex.toString());
             ex.printStackTrace(System.err);
         }
-    }//GEN-LAST:event_addBannedPlayerActionPerformed
+    }//GEN-LAST:event_addWhiteListActionPerformed
 
     private void addOperatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addOperatorActionPerformed
         ListModel model = operatorsList.getModel();
@@ -2247,34 +2203,213 @@ public class BukkitUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_addOperatorActionPerformed
 
-    private void addWhiteListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWhiteListActionPerformed
-        ListModel model = whitelist.getModel();
+    private void addBannedPlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBannedPlayerActionPerformed
+        ListModel model = bannedPlayersList.getModel();
         DefaultListModel newModel = new DefaultListModel();
-        if (jTextField4.getText() == null || jTextField4.getText().equals("")) {
+        if (jTextField2.getText() == null || jTextField2.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Please enter a player name.", "Enter Player Name", JOptionPane.WARNING_MESSAGE);
         } else {
+
             for (int i = 0; i < model.getSize(); i++) {
-                newModel.addElement(model.getElementAt(i) + "\n");
+                newModel.addElement(model.getElementAt(i));
             }
-            newModel.addElement(jTextField4.getText());
-            whitelist.setModel(newModel);
+            newModel.addElement(jTextField2.getText());
+            bannedPlayersList.setModel(newModel);
         }
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(settings.getServerDir() + "/white-list.txt")));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(settings.getServerDir() + "/banned-players.txt")));
             for (int i = 0; i < newModel.getSize(); i++) {
-                writer.write(newModel.getElementAt(i).toString());
+                writer.write(newModel.getElementAt(i).toString() + "\n");
             }
             writer.close();
         } catch (Exception ex) {
             System.err.println("ERROR: Error while writing new banned IP to file!\n" + ex.toString());
             ex.printStackTrace(System.err);
         }
-    }//GEN-LAST:event_addWhiteListActionPerformed
-    //</editor-fold>
+    }//GEN-LAST:event_addBannedPlayerActionPerformed
 
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        playerIO();
-    }//GEN-LAST:event_formWindowActivated
+    private void addBannedIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBannedIPActionPerformed
+        ListModel model = bannedIPList.getModel();
+        DefaultListModel newModel = new DefaultListModel();
+        if (jTextField1.getText() == null || jTextField1.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Please enter an IP address.", "Enter IP Address", JOptionPane.WARNING_MESSAGE);
+        } else {
+            for (int i = 0; i < model.getSize(); i++) {
+                newModel.addElement(model.getElementAt(i));
+            }
+            newModel.addElement(jTextField1.getText());
+            bannedIPList.setModel(newModel);
+        }
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(settings.getServerDir() + "/banned-ips.txt")));
+            for (int i = 0; i < newModel.getSize(); i++) {
+                writer.write(newModel.getElementAt(i).toString() + "\n");
+            }
+            writer.close();
+        } catch (Exception ex) {
+            System.err.println("ERROR: Error while writing new banned IP to file!\n" + ex.toString());
+            ex.printStackTrace(System.err);
+        }
+    }//GEN-LAST:event_addBannedIPActionPerformed
+
+    private void executeCmdBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeCmdBtnActionPerformed
+        if (serverState == ServerState.ONLINE) {
+            try {
+                String cmd = executeCmdTxtField.getText();
+                if (cmd.startsWith("/")) {
+                    processWriter.write(cmd.replace("/", ""));
+                    processWriter.newLine();
+                    processWriter.flush();
+                } else {
+                    processWriter.write("say " + cmd);
+                    processWriter.newLine();
+                    processWriter.flush();
+                }
+            } catch (IOException ex) {
+                System.err.println("ERROR: Error while executing Bukkit command!\n" + ex.toString());
+                ex.printStackTrace(System.err);
+            }
+        }
+        executeCmdTxtField.setText("");
+    }//GEN-LAST:event_executeCmdBtnActionPerformed
+
+    private void executeCmdTxtFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_executeCmdTxtFieldKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER && executeCmdTxtField.getText().startsWith("/")) {
+            executeCmdBtn.doClick();
+        } else if (evt.getKeyCode() == KeyEvent.VK_ENTER && executeCmdTxtField.getText().contains("::")) {
+            if (executeCmdTxtField.getText().contains("ls")) {
+                String[] array = executeCmdTxtField.getText().split("ls ");
+                File f = new File(settings.getServerDir() + array[1]);
+                consoleLog.append("\n");
+                for (String file : f.list()) {
+                    consoleLog.append("[BukkitUI {CMD}] " + file + "\n");
+                }
+                executeCmdTxtField.setText("");
+                return;
+            } else if (executeCmdTxtField.getText().contains("del")) {
+                String[] array = executeCmdTxtField.getText().split("del ");
+                File f = new File(settings.getServerDir() + array[1]);
+                if (f.isDirectory()) {
+                    consoleLog.append("[BukkitUI {CMD}] Could not delete. Is Directory.");
+                } else {
+                    consoleLog.append("Deletion successful: " + f.delete());
+                }
+                executeCmdTxtField.setText("");
+                return;
+            }
+        } else if (evt.getKeyCode() == KeyEvent.VK_CONTROL) {
+            CTRL_PRESSED = true;
+        } else if (evt.getKeyCode() == KeyEvent.VK_B) {
+            B_PRESSED = true;
+        } else if (evt.getKeyCode() == KeyEvent.VK_H) {
+            H_PRESSED = true;
+        } else if (evt.getKeyCode() == KeyEvent.VK_C) {
+            C_PRESSED = true;
+        } else if (evt.getKeyCode() == KeyEvent.VK_SHIFT)
+            SHFT_PRESSED = true;
+        else if (evt.getKeyCode() == KeyEvent.VK_S)
+            S_PRESSED = true;
+        else if (evt.getKeyCode() == KeyEvent.VK_R)
+            R_PRESSED = true;
+            
+
+        if (CTRL_PRESSED && H_PRESSED) {
+            new CommandHelp(this).setVisible(true);
+            CTRL_PRESSED = false;
+            H_PRESSED = false;
+        } else if (CTRL_PRESSED && B_PRESSED) { // An easter egg. Pun intended. (Note: This was written two weeks before easter in 2014)
+            consoleLog.append("I love carrots <3\n"
+                    + "().()\n"
+                    + "(*.*)\n"
+                    + "(\")(\")\n");
+            CTRL_PRESSED = false;
+            B_PRESSED = false;
+        } else if (CTRL_PRESSED && C_PRESSED) {
+            if (serverState == ServerState.OFFLINE) {
+                consoleLog.setText("-- Not Running --\n");
+            } else {
+                consoleLog.setText("");
+            }
+            CTRL_PRESSED = false;
+            C_PRESSED = false;
+        } else if (CTRL_PRESSED && S_PRESSED) {
+            if (serverState == ServerState.OFFLINE)
+                startServerBtn.doClick();
+            CTRL_PRESSED = false;
+            S_PRESSED = false;
+        } else if (CTRL_PRESSED && SHFT_PRESSED && S_PRESSED) {
+            if (serverState != ServerState.OFFLINE)
+                stopServerBtn.doClick();
+            CTRL_PRESSED = false;
+            SHFT_PRESSED = false;
+            S_PRESSED = false;
+        } else if (CTRL_PRESSED && R_PRESSED) {
+            if (serverState == ServerState.ONLINE) 
+                restartServerBtn.doClick();
+            CTRL_PRESSED = false;
+            R_PRESSED = false;
+        }
+    }//GEN-LAST:event_executeCmdTxtFieldKeyPressed
+
+    private void deleteServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteServerBtnActionPerformed
+        int res = JOptionPane.showConfirmDialog(null, "This process is irreversable! Are you sure you wish to continue deleting your server?\n"
+                + " - All data was be destroyed irreversably, including worlds, plugins and mods.", 
+                "Do you Wish to Continue?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (res == JOptionPane.YES_OPTION) {
+            serverProgress.setVisible(true);
+            try {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            
+                            for (File file : settings.getServerDir().listFiles()) {
+                                if (!file.getName().equals("BukkitUI.jar") || !file.getName().equals(".bukkitui"))
+                                    delete(file);
+                            }
+                            
+                        } catch (Exception ex) {
+                            System.err.println("ERROR: An error occured while deleting server files!");
+                            ex.printStackTrace(System.err);
+                        }
+                        JOptionPane.showMessageDialog(null, "INFORMATION: All files were successfully deleted.", "All Files Destroyed.", JOptionPane.INFORMATION_MESSAGE);
+                        interrupt();
+                    }
+                }.start();
+            } catch (Exception ex) {
+                System.err.println("ERROR: An error occured while deleting server files!");
+                ex.printStackTrace(System.err);
+            }
+            serverProgress.setVisible(false);
+        }
+    }//GEN-LAST:event_deleteServerBtnActionPerformed
+
+    //========== Server Controls (Advanced) ==========\\
+
+    private void updateServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateServerBtnActionPerformed
+        new InstallUpdateServer(this, settings).setVisible(true);
+    }//GEN-LAST:event_updateServerBtnActionPerformed
+
+    private void restartServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartServerBtnActionPerformed
+        try {
+            stopServer();
+            Thread.sleep(500);
+            startServer();
+        } catch (InterruptedException ex) {
+            startServer();
+        }
+    }//GEN-LAST:event_restartServerBtnActionPerformed
+
+    private void stopServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopServerBtnActionPerformed
+        stopServer();
+    }//GEN-LAST:event_stopServerBtnActionPerformed
+
+    //<editor-fold defaultstate="collapsed" desc="Server Controls">
+    //========== Server Controls (Basic) ==========\\
+
+    private void startServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startServerBtnActionPerformed
+        startServer();
+    }//GEN-LAST:event_startServerBtnActionPerformed
 
     //<< Start of Server Methods and Vars >>\\
     boolean runServer = true;
@@ -2285,6 +2420,7 @@ public class BukkitUI extends javax.swing.JFrame {
      */
     //<editor-fold defaultstate="collapsed" desc="Big Methods">
     private void startServer() {
+        serverProgress.setVisible(true);
         serverRuntime.setText("Runtime: 00:00:00");
         try {
             if (serverState != ServerState.OFFLINE) {
@@ -2301,12 +2437,40 @@ public class BukkitUI extends javax.swing.JFrame {
 
             File plugins = new File(settings.getServerDir().getAbsolutePath() + "/plugins");
             File jvmMonitor = new File(plugins.getAbsolutePath() + "/JVMMonitor_BukkitUI.jar");
+            File sysIn = new File(plugins.getAbsolutePath() + "/SysIn_BukkitUI.jar");
+            File plugin_ReadMe = new File(plugins.getAbsolutePath() + "/BukkitUI_README.txt");
+
             if (!plugins.exists()) {
                 plugins.mkdir();
             }
+
             if (!jvmMonitor.exists()) {
                 InputStream input = this.getClass().getResourceAsStream("/eu/m4gkbeatz/bukkitui/resources/plugins/JVMMonitor_BukkitUI.jar");
                 OutputStream output = new FileOutputStream(jvmMonitor);
+                int readBytes = 0;
+                byte[] buffer = new byte[4096];
+                while ((readBytes = input.read(buffer)) > 0) {
+                    output.write(buffer, 0, readBytes);
+                }
+                input.close();
+                output.close();
+            }
+
+            if (!sysIn.exists()) {
+                InputStream input = this.getClass().getResourceAsStream("/eu/m4gkbeatz/bukkitui/resources/plugins/SysIn_BukkitUI.jar");
+                OutputStream output = new FileOutputStream(sysIn);
+                int readBytes = 0;
+                byte[] buffer = new byte[4096];
+                while ((readBytes = input.read(buffer)) > 0) {
+                    output.write(buffer, 0, readBytes);
+                }
+                input.close();
+                output.close();
+            }
+
+            if (!plugin_ReadMe.exists()) {
+                InputStream input = this.getClass().getResourceAsStream("/eu/m4gkbeatz/bukkitui/resources/plugins/BukkitUI_README.txt");
+                OutputStream output = new FileOutputStream(plugin_ReadMe);
                 int readBytes = 0;
                 byte[] buffer = new byte[4096];
                 while ((readBytes = input.read(buffer)) > 0) {
@@ -2354,7 +2518,7 @@ public class BukkitUI extends javax.swing.JFrame {
             System.out.println("Fetching streams...");
             processReader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
             processWriter = new BufferedWriter(new OutputStreamWriter(pr.getOutputStream()));
-            System.out.println("Stream fetched. Monitoring process...");
+            System.out.println("Streams fetched. Monitoring process...");
             monitorServer();
         } catch (Exception ex) {
             serverStatusLabel.setIcon(OFFLINE);
@@ -2364,6 +2528,7 @@ public class BukkitUI extends javax.swing.JFrame {
                     + "\n The stack trace was printed to the console.", "Error Starting Server!", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace(System.err);
         }
+        serverProgress.setVisible(false);
     }
 
     private void monitorServer() {
@@ -2482,6 +2647,7 @@ public class BukkitUI extends javax.swing.JFrame {
     }
 
     private void stopServer() {
+        serverProgress.setVisible(true);
         System.out.print("Stopping server...");
         try {
             processWriter.write("stop");
@@ -2497,6 +2663,7 @@ public class BukkitUI extends javax.swing.JFrame {
                     "Error Stopping Server", JOptionPane.ERROR_MESSAGE);
             killServer();
         }
+        serverProgress.setVisible(false);
     }
     //</editor-fold>
 
@@ -2546,7 +2713,7 @@ public class BukkitUI extends javax.swing.JFrame {
             System.err.println(ex.toString());
             ex.printStackTrace(System.err);
         }
-        
+
     }
 
     private void buildBukkitYml(File f) {
@@ -2771,7 +2938,7 @@ public class BukkitUI extends javax.swing.JFrame {
     private javax.swing.JCheckBox enableQuery;
     private javax.swing.JCheckBox enableRcon;
     private javax.swing.JButton executeCmdBtn;
-    private javax.swing.JTextField executeCmdTxtField;
+    public javax.swing.JTextField executeCmdTxtField;
     private javax.swing.JComboBox gameMode;
     private javax.swing.JTextField gcPeriodInTicksTxtBox;
     private javax.swing.JCheckBox generateStructures;
@@ -2877,7 +3044,7 @@ public class BukkitUI extends javax.swing.JFrame {
     private javax.swing.JButton saveBukkitYml;
     private javax.swing.JTextField serverIP;
     private javax.swing.JTextField serverPort;
-    private javax.swing.JButton serverPropertiesBtn;
+    private javax.swing.JProgressBar serverProgress;
     private javax.swing.JLabel serverRuntime;
     private javax.swing.JLabel serverStatusLabel;
     private javax.swing.JTextField shutdownMessageTxtBox;
@@ -2885,8 +3052,8 @@ public class BukkitUI extends javax.swing.JFrame {
     private javax.swing.JCheckBox spawnMonsters;
     private javax.swing.JCheckBox spawnNPCs;
     private javax.swing.JCheckBox startServerAutomaticallyCheckbox;
-    private javax.swing.JButton startServerBtn;
-    private javax.swing.JButton stopServerBtn;
+    public javax.swing.JButton startServerBtn;
+    public javax.swing.JButton stopServerBtn;
     private javax.swing.JTextField ticksPerAnimalSpawnTxtBox;
     private javax.swing.JTextField ticksPerAutoSave;
     private javax.swing.JTextField ticksPerMonsterSpawnTxtBox;
@@ -2922,5 +3089,27 @@ public class BukkitUI extends javax.swing.JFrame {
 
     }
     //</editor-fold>
+    
+    //========== IO Method(s) ===========\\
+    private void delete(File file) throws IOException {
+        if (file.isDirectory()) {
+            if (file.list().length == 0) {
+                file.delete();
+            } else {
+                for (String tmp : file.list()) {
+                    File fileToDelete = new File(file, tmp);
+                    
+                    // Delete files recursively
+                    delete(fileToDelete);
+                }
+            }
+            if (file.list().length == 0) {
+                file.delete();
+            }
+            
+        } else {
+            file.delete();
+        }
+    }
 
 }
