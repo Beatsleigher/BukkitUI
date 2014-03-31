@@ -16,7 +16,6 @@
  */
 package eu.m4gkbeatz.bukkitui.ui;
 
-import com.sun.glass.events.KeyEvent;
 import eu.m4gkbeatz.bukkitui.help.CommandHelp;
 import javax.swing.*;
 import java.io.*;
@@ -27,7 +26,8 @@ import java.util.*;
 import eu.m4gkbeatz.bukkitui.logging.Logger;
 import eu.m4gkbeatz.bukkitui.settings.*;
 import eu.m4gkbeatz.bukkitui.io.*;
-import eu.m4gkbeatz.bukkitui.server.players.Player;
+import eu.m4gkbeatz.bukkitui.server.players.*;
+import java.awt.event.KeyEvent;
 
 /**
  *
@@ -50,6 +50,7 @@ public class BukkitUI extends JFrame {
     }
 
     Map<String, ImageIcon> imageMap = null;
+    Map<String, ImageIcon> playerImageMap = null;
     Point origin = this.getLocation();
     SettingsManager settings = null;
     Logger log = null;
@@ -63,6 +64,7 @@ public class BukkitUI extends JFrame {
     List<String> processArgs = new ArrayList();
     ServerState serverState = ServerState.OFFLINE;
     List<Player> listOfPlayers = new ArrayList<>();
+    List<ServerPlayer> serverPlayers = new ArrayList<>();
     //=============================================\\
     boolean CTRL_PRESSED = false;
     boolean B_PRESSED = false;
@@ -89,6 +91,7 @@ public class BukkitUI extends JFrame {
         applySettings();
         loadServerInfo();
         serverProgress.setVisible(false);
+        serverPlayerList.setCellRenderer(new ServerPlayerListCellRenderer());
     }
     //</editor-fold>
 
@@ -499,42 +502,6 @@ public class BukkitUI extends JFrame {
         jLabel7 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
-        jPanel14 = new javax.swing.JPanel();
-        jPanel20 = new javax.swing.JPanel();
-        allowNether = new javax.swing.JCheckBox();
-        enableQuery = new javax.swing.JCheckBox();
-        allowFlight = new javax.swing.JCheckBox();
-        enableRcon = new javax.swing.JCheckBox();
-        spawnNPCs = new javax.swing.JCheckBox();
-        whiteList = new javax.swing.JCheckBox();
-        spawnAnimals = new javax.swing.JCheckBox();
-        onlineMode = new javax.swing.JCheckBox();
-        enablePVP = new javax.swing.JCheckBox();
-        spawnMonsters = new javax.swing.JCheckBox();
-        generateStructures = new javax.swing.JCheckBox();
-        jPanel21 = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        levelName = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        serverPort = new javax.swing.JTextField();
-        jLabel15 = new javax.swing.JLabel();
-        levelType = new javax.swing.JComboBox();
-        jLabel16 = new javax.swing.JLabel();
-        serverIP = new javax.swing.JTextField();
-        jLabel17 = new javax.swing.JLabel();
-        maxBuildHight = new javax.swing.JTextField();
-        jLabel18 = new javax.swing.JLabel();
-        difficulty = new javax.swing.JTextField();
-        jLabel19 = new javax.swing.JLabel();
-        gameMode = new javax.swing.JComboBox();
-        jLabel20 = new javax.swing.JLabel();
-        maxPlayers = new javax.swing.JTextField();
-        jLabel21 = new javax.swing.JLabel();
-        viewDistance = new javax.swing.JTextField();
-        jLabel22 = new javax.swing.JLabel();
-        motd = new javax.swing.JTextField();
-        jLabel23 = new javax.swing.JLabel();
-        levelSeed = new javax.swing.JTextField();
         jPanel16 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         bannedIPList = new javax.swing.JList();
@@ -545,16 +512,6 @@ public class BukkitUI extends JFrame {
         addBannedPlayer = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         bannedPlayersList = new javax.swing.JList();
-        jPanel18 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        operatorsList = new javax.swing.JList();
-        jTextField3 = new javax.swing.JTextField();
-        addOperator = new javax.swing.JButton();
-        jPanel19 = new javax.swing.JPanel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        whitelist = new javax.swing.JList();
-        jTextField4 = new javax.swing.JTextField();
-        addWhiteList = new javax.swing.JButton();
         jPanel15 = new javax.swing.JPanel();
         jPanel23 = new javax.swing.JPanel();
         allowEnd = new javax.swing.JCheckBox();
@@ -600,6 +557,55 @@ public class BukkitUI extends JFrame {
         jLabel40 = new javax.swing.JLabel();
         autoUpdaterHost = new javax.swing.JTextField();
         saveBukkitYml = new javax.swing.JButton();
+        jPanel29 = new javax.swing.JPanel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        serverPlayerList = new javax.swing.JList();
+        jPanel18 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        operatorsList = new javax.swing.JList();
+        jTextField3 = new javax.swing.JTextField();
+        addOperator = new javax.swing.JButton();
+        jPanel14 = new javax.swing.JPanel();
+        jPanel20 = new javax.swing.JPanel();
+        allowNether = new javax.swing.JCheckBox();
+        enableQuery = new javax.swing.JCheckBox();
+        allowFlight = new javax.swing.JCheckBox();
+        enableRcon = new javax.swing.JCheckBox();
+        spawnNPCs = new javax.swing.JCheckBox();
+        whiteList = new javax.swing.JCheckBox();
+        spawnAnimals = new javax.swing.JCheckBox();
+        onlineMode = new javax.swing.JCheckBox();
+        enablePVP = new javax.swing.JCheckBox();
+        spawnMonsters = new javax.swing.JCheckBox();
+        generateStructures = new javax.swing.JCheckBox();
+        jPanel21 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        levelName = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        serverPort = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        levelType = new javax.swing.JComboBox();
+        jLabel16 = new javax.swing.JLabel();
+        serverIP = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        maxBuildHight = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        difficulty = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        gameMode = new javax.swing.JComboBox();
+        jLabel20 = new javax.swing.JLabel();
+        maxPlayers = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        viewDistance = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        motd = new javax.swing.JTextField();
+        jLabel23 = new javax.swing.JLabel();
+        levelSeed = new javax.swing.JTextField();
+        jPanel19 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        whitelist = new javax.swing.JList();
+        jTextField4 = new javax.swing.JTextField();
+        addWhiteList = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
@@ -1001,262 +1007,6 @@ public class BukkitUI extends JFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setOpaque(false);
 
-        jPanel14.setOpaque(false);
-
-        jPanel20.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel20.setOpaque(false);
-
-        allowNether.setForeground(new java.awt.Color(255, 255, 255));
-        allowNether.setSelected(true);
-        allowNether.setText("Allow Nether");
-
-        enableQuery.setForeground(new java.awt.Color(255, 255, 255));
-        enableQuery.setText("Enable Query");
-
-        allowFlight.setForeground(new java.awt.Color(255, 255, 255));
-        allowFlight.setText("Allow Flight");
-
-        enableRcon.setForeground(new java.awt.Color(255, 255, 255));
-        enableRcon.setText("Enable RCON");
-
-        spawnNPCs.setForeground(new java.awt.Color(255, 255, 255));
-        spawnNPCs.setSelected(true);
-        spawnNPCs.setText("Spawn NPCs");
-
-        whiteList.setForeground(new java.awt.Color(255, 255, 255));
-        whiteList.setText("White List");
-
-        spawnAnimals.setForeground(new java.awt.Color(255, 255, 255));
-        spawnAnimals.setSelected(true);
-        spawnAnimals.setText("Spawn Animals");
-
-        onlineMode.setForeground(new java.awt.Color(255, 255, 255));
-        onlineMode.setSelected(true);
-        onlineMode.setText("Online Mode");
-
-        enablePVP.setForeground(new java.awt.Color(255, 255, 255));
-        enablePVP.setSelected(true);
-        enablePVP.setText("PVP");
-
-        spawnMonsters.setForeground(new java.awt.Color(255, 255, 255));
-        spawnMonsters.setSelected(true);
-        spawnMonsters.setText("Spawn Monsters");
-
-        generateStructures.setForeground(new java.awt.Color(255, 255, 255));
-        generateStructures.setSelected(true);
-        generateStructures.setText("Generate Structures");
-
-        javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
-        jPanel20.setLayout(jPanel20Layout);
-        jPanel20Layout.setHorizontalGroup(
-            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel20Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(allowNether)
-                    .addComponent(enableQuery)
-                    .addComponent(allowFlight)
-                    .addComponent(enableRcon)
-                    .addComponent(spawnNPCs)
-                    .addComponent(whiteList)
-                    .addComponent(spawnAnimals)
-                    .addComponent(onlineMode)
-                    .addComponent(enablePVP))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(generateStructures)
-                    .addComponent(spawnMonsters))
-                .addContainerGap(43, Short.MAX_VALUE))
-        );
-        jPanel20Layout.setVerticalGroup(
-            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel20Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(allowNether)
-                    .addComponent(spawnMonsters))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(enableQuery)
-                    .addComponent(generateStructures))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(allowFlight)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(enableRcon)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spawnNPCs)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(whiteList)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spawnAnimals)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(onlineMode)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(enablePVP)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel21.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel21.setOpaque(false);
-
-        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel13.setText("Level Name:");
-
-        levelName.setText("world");
-
-        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel14.setText("Server Port:");
-
-        serverPort.setText("25565");
-
-        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel15.setText("Level Type:");
-
-        levelType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "DEFAULT", "FLAT", "LARGEBIOMES", "AMPLIFIED" }));
-
-        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel16.setText("Server IP:");
-
-        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel17.setText("Max Build Hight:");
-
-        maxBuildHight.setText("265");
-
-        jLabel18.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel18.setText("Difficulty:");
-
-        difficulty.setText("1");
-
-        jLabel19.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel19.setText("Game Mode:");
-
-        gameMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SURVIVAL", "CREATIVE", "ADVENTURE" }));
-
-        jLabel20.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel20.setText("Max Players:");
-
-        maxPlayers.setText("20");
-
-        jLabel21.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel21.setText("View Distance:");
-
-        viewDistance.setText("10");
-
-        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel22.setText("Motto:");
-
-        motd.setText("Powered by BukkitUI");
-
-        jLabel23.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel23.setText("Level Seed:");
-
-        levelSeed.setText("PoweredByBukkitUI");
-
-        javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
-        jPanel21.setLayout(jPanel21Layout);
-        jPanel21Layout.setHorizontalGroup(
-            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel21Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel13)
-                    .addComponent(jLabel14)
-                    .addComponent(jLabel15)
-                    .addComponent(jLabel16)
-                    .addComponent(jLabel17)
-                    .addComponent(jLabel18)
-                    .addComponent(jLabel19)
-                    .addComponent(jLabel20)
-                    .addComponent(jLabel21)
-                    .addComponent(jLabel22)
-                    .addComponent(jLabel23))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(viewDistance)
-                    .addComponent(maxPlayers)
-                    .addComponent(gameMode, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(difficulty)
-                    .addComponent(maxBuildHight)
-                    .addComponent(serverIP)
-                    .addComponent(levelType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(serverPort)
-                    .addComponent(levelName)
-                    .addComponent(motd, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
-                    .addComponent(levelSeed))
-                .addContainerGap())
-        );
-        jPanel21Layout.setVerticalGroup(
-            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel21Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel13)
-                    .addComponent(levelName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel14)
-                    .addComponent(serverPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel15)
-                    .addComponent(levelType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(serverIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel23)
-                    .addComponent(levelSeed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel17)
-                    .addComponent(maxBuildHight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel18)
-                    .addComponent(difficulty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel19)
-                    .addComponent(gameMode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel20)
-                    .addComponent(maxPlayers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel21)
-                    .addComponent(viewDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel22)
-                    .addComponent(motd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(30, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
-        jPanel14.setLayout(jPanel14Layout);
-        jPanel14Layout.setHorizontalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel14Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel14Layout.setVerticalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel21, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-
-        jTabbedPane2.addTab("Server Properties", jPanel14);
-
         jPanel16.setOpaque(false);
 
         jScrollPane2.setViewportView(bannedIPList);
@@ -1334,84 +1084,6 @@ public class BukkitUI extends JFrame {
         );
 
         jTabbedPane2.addTab("Banned Players", jPanel17);
-
-        jPanel18.setOpaque(false);
-
-        jScrollPane4.setViewportView(operatorsList);
-
-        addOperator.setText("Add...");
-        addOperator.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addOperatorActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
-        jPanel18.setLayout(jPanel18Layout);
-        jPanel18Layout.setHorizontalGroup(
-            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel18Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
-                    .addGroup(jPanel18Layout.createSequentialGroup()
-                        .addComponent(jTextField3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addOperator)))
-                .addContainerGap())
-        );
-        jPanel18Layout.setVerticalGroup(
-            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel18Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addOperator))
-                .addContainerGap())
-        );
-
-        jTabbedPane2.addTab("Operators", jPanel18);
-
-        jPanel19.setOpaque(false);
-
-        jScrollPane5.setViewportView(whitelist);
-
-        addWhiteList.setText("Add...");
-        addWhiteList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addWhiteListActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
-        jPanel19.setLayout(jPanel19Layout);
-        jPanel19Layout.setHorizontalGroup(
-            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel19Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
-                    .addGroup(jPanel19Layout.createSequentialGroup()
-                        .addComponent(jTextField4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addWhiteList)))
-                .addContainerGap())
-        );
-        jPanel19Layout.setVerticalGroup(
-            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel19Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addWhiteList))
-                .addContainerGap())
-        );
-
-        jTabbedPane2.addTab("Whitelist", jPanel19);
 
         jPanel15.setOpaque(false);
 
@@ -1770,6 +1442,363 @@ public class BukkitUI extends JFrame {
 
         jTabbedPane2.addTab("Bukkit Config", jPanel15);
 
+        jPanel29.setOpaque(false);
+
+        jScrollPane8.setViewportView(serverPlayerList);
+
+        javax.swing.GroupLayout jPanel29Layout = new javax.swing.GroupLayout(jPanel29);
+        jPanel29.setLayout(jPanel29Layout);
+        jPanel29Layout.setHorizontalGroup(
+            jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel29Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel29Layout.setVerticalGroup(
+            jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel29Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane2.addTab("Players", jPanel29);
+
+        jPanel18.setOpaque(false);
+
+        jScrollPane4.setViewportView(operatorsList);
+
+        addOperator.setText("Add...");
+        addOperator.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addOperatorActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
+        jPanel18.setLayout(jPanel18Layout);
+        jPanel18Layout.setHorizontalGroup(
+            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel18Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
+                    .addGroup(jPanel18Layout.createSequentialGroup()
+                        .addComponent(jTextField3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addOperator)))
+                .addContainerGap())
+        );
+        jPanel18Layout.setVerticalGroup(
+            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel18Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addOperator))
+                .addContainerGap())
+        );
+
+        jTabbedPane2.addTab("Operators", jPanel18);
+
+        jPanel14.setOpaque(false);
+
+        jPanel20.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel20.setOpaque(false);
+
+        allowNether.setForeground(new java.awt.Color(255, 255, 255));
+        allowNether.setSelected(true);
+        allowNether.setText("Allow Nether");
+
+        enableQuery.setForeground(new java.awt.Color(255, 255, 255));
+        enableQuery.setText("Enable Query");
+
+        allowFlight.setForeground(new java.awt.Color(255, 255, 255));
+        allowFlight.setText("Allow Flight");
+
+        enableRcon.setForeground(new java.awt.Color(255, 255, 255));
+        enableRcon.setText("Enable RCON");
+
+        spawnNPCs.setForeground(new java.awt.Color(255, 255, 255));
+        spawnNPCs.setSelected(true);
+        spawnNPCs.setText("Spawn NPCs");
+
+        whiteList.setForeground(new java.awt.Color(255, 255, 255));
+        whiteList.setText("White List");
+
+        spawnAnimals.setForeground(new java.awt.Color(255, 255, 255));
+        spawnAnimals.setSelected(true);
+        spawnAnimals.setText("Spawn Animals");
+
+        onlineMode.setForeground(new java.awt.Color(255, 255, 255));
+        onlineMode.setSelected(true);
+        onlineMode.setText("Online Mode");
+
+        enablePVP.setForeground(new java.awt.Color(255, 255, 255));
+        enablePVP.setSelected(true);
+        enablePVP.setText("PVP");
+
+        spawnMonsters.setForeground(new java.awt.Color(255, 255, 255));
+        spawnMonsters.setSelected(true);
+        spawnMonsters.setText("Spawn Monsters");
+
+        generateStructures.setForeground(new java.awt.Color(255, 255, 255));
+        generateStructures.setSelected(true);
+        generateStructures.setText("Generate Structures");
+
+        javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
+        jPanel20.setLayout(jPanel20Layout);
+        jPanel20Layout.setHorizontalGroup(
+            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel20Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(allowNether)
+                    .addComponent(enableQuery)
+                    .addComponent(allowFlight)
+                    .addComponent(enableRcon)
+                    .addComponent(spawnNPCs)
+                    .addComponent(whiteList)
+                    .addComponent(spawnAnimals)
+                    .addComponent(onlineMode)
+                    .addComponent(enablePVP))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(generateStructures)
+                    .addComponent(spawnMonsters))
+                .addContainerGap(43, Short.MAX_VALUE))
+        );
+        jPanel20Layout.setVerticalGroup(
+            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel20Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(allowNether)
+                    .addComponent(spawnMonsters))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(enableQuery)
+                    .addComponent(generateStructures))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(allowFlight)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(enableRcon)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spawnNPCs)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(whiteList)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spawnAnimals)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(onlineMode)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(enablePVP)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel21.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel21.setOpaque(false);
+
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel13.setText("Level Name:");
+
+        levelName.setText("world");
+
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel14.setText("Server Port:");
+
+        serverPort.setText("25565");
+
+        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel15.setText("Level Type:");
+
+        levelType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "DEFAULT", "FLAT", "LARGEBIOMES", "AMPLIFIED" }));
+
+        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel16.setText("Server IP:");
+
+        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel17.setText("Max Build Hight:");
+
+        maxBuildHight.setText("265");
+
+        jLabel18.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel18.setText("Difficulty:");
+
+        difficulty.setText("1");
+
+        jLabel19.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel19.setText("Game Mode:");
+
+        gameMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SURVIVAL", "CREATIVE", "ADVENTURE" }));
+
+        jLabel20.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel20.setText("Max Players:");
+
+        maxPlayers.setText("20");
+
+        jLabel21.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel21.setText("View Distance:");
+
+        viewDistance.setText("10");
+
+        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel22.setText("Motto:");
+
+        motd.setText("Powered by BukkitUI");
+
+        jLabel23.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel23.setText("Level Seed:");
+
+        levelSeed.setText("PoweredByBukkitUI");
+
+        javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
+        jPanel21.setLayout(jPanel21Layout);
+        jPanel21Layout.setHorizontalGroup(
+            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel21Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel15)
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel17)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel19)
+                    .addComponent(jLabel20)
+                    .addComponent(jLabel21)
+                    .addComponent(jLabel22)
+                    .addComponent(jLabel23))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(viewDistance)
+                    .addComponent(maxPlayers)
+                    .addComponent(gameMode, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(difficulty)
+                    .addComponent(maxBuildHight)
+                    .addComponent(serverIP)
+                    .addComponent(levelType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(serverPort)
+                    .addComponent(levelName)
+                    .addComponent(motd, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                    .addComponent(levelSeed))
+                .addContainerGap())
+        );
+        jPanel21Layout.setVerticalGroup(
+            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel21Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(levelName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(serverPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(levelType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(serverIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel23)
+                    .addComponent(levelSeed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(maxBuildHight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel18)
+                    .addComponent(difficulty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel19)
+                    .addComponent(gameMode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(maxPlayers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(viewDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(motd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(30, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel21, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        jTabbedPane2.addTab("Server Properties", jPanel14);
+
+        jPanel19.setOpaque(false);
+
+        jScrollPane5.setViewportView(whitelist);
+
+        addWhiteList.setText("Add...");
+        addWhiteList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addWhiteListActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
+        jPanel19.setLayout(jPanel19Layout);
+        jPanel19Layout.setHorizontalGroup(
+            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel19Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
+                    .addGroup(jPanel19Layout.createSequentialGroup()
+                        .addComponent(jTextField4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addWhiteList)))
+                .addContainerGap())
+        );
+        jPanel19Layout.setVerticalGroup(
+            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel19Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addWhiteList))
+                .addContainerGap())
+        );
+
+        jTabbedPane2.addTab("Whitelist", jPanel19);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -1968,7 +1997,7 @@ public class BukkitUI extends JFrame {
         jLabel41.setText("Credits:");
 
         jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Design (Look and Feel): ", "\t- JoxyLAF → KDE Oxygen Clone", "All code and the design (Actual design):", "\t- Beatsleigher." };
+            String[] strings = { "Design (Look and Feel): ", "\t- JoxyLAF → KDE Oxygen Clone", "All code and the design (Actual design):", "\t- Beatsleigher.", "Zipping Tool:", "\t- Lingala Zip4J" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -2105,9 +2134,7 @@ public class BukkitUI extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
     //</editor-fold>
     
-    //<< End of Control Methods >>\\
-    
-
+    //<editor-fold defaultstate="collapsed" desc="Activation and Frame Movement">
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         playerIO();
         if (settings.startServerAutomatically() && serverState == ServerState.OFFLINE)
@@ -2119,7 +2146,6 @@ public class BukkitUI extends JFrame {
         getComponentAt(origin);
     }//GEN-LAST:event_jPanel1MouseClicked
 
-    //<editor-fold defaultstate="collapsed" desc="Other Unimportant Stuff">
     /**
      * Moves frame to new location, depending on where the user drags mouse to.
      *
@@ -2138,7 +2164,9 @@ public class BukkitUI extends JFrame {
 
         this.setLocation(x, y);
     }//GEN-LAST:event_jPanel1MouseDragged
-
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Window Controls">
     private void minimizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minimizeBtnActionPerformed
         this.setState(JFrame.ICONIFIED);
     }//GEN-LAST:event_minimizeBtnActionPerformed
@@ -2164,7 +2192,9 @@ public class BukkitUI extends JFrame {
         } catch (Exception ex) {
         }
     }//GEN-LAST:event_closeBtnActionPerformed
-
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Settings Stuff">
     private void checkForUpdatesCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkForUpdatesCheckboxActionPerformed
         settings.setCheckForUpdates(checkForUpdatesCheckbox.isSelected());
     }//GEN-LAST:event_checkForUpdatesCheckboxActionPerformed
@@ -2191,14 +2221,13 @@ public class BukkitUI extends JFrame {
         }
     }//GEN-LAST:event_craftbukkitLocationBtnActionPerformed
 
-    //<editor-fold defaultstate="collapsed" desc="Preferences">
-    //========== BukkitUI Settings ==========\\
-
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         settings.setLayout(BukkitUI_Layout.valueOf(jComboBox1.getSelectedItem().toString()));
         this.backgroundImage.setIcon(new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/design_layout/" + settings.getLayout() + ".png")));
     }//GEN-LAST:event_jComboBox1ActionPerformed
-
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Special Player Lists">
     private void addWhiteListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWhiteListActionPerformed
         ListModel model = whitelist.getModel();
         DefaultListModel newModel = new DefaultListModel();
@@ -2296,7 +2325,9 @@ public class BukkitUI extends JFrame {
             ex.printStackTrace(System.err);
         }
     }//GEN-LAST:event_addBannedIPActionPerformed
-
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Command Execution">
     private void executeCmdBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeCmdBtnActionPerformed
         if (serverState == ServerState.ONLINE) {
             try {
@@ -2395,7 +2426,10 @@ public class BukkitUI extends JFrame {
             R_PRESSED = false;
         }
     }//GEN-LAST:event_executeCmdTxtFieldKeyPressed
+    //</editor-fold>
 
+    //========== Server Controls (Advanced) ==========\\
+    //<editor-fold defaultstate="collapsed" desc="Advanced Server Controls">
     private void deleteServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteServerBtnActionPerformed
         int res = JOptionPane.showConfirmDialog(null, "This process is irreversable! Are you sure you wish to continue deleting your server?\n"
                 + " - All data was be destroyed irreversably, including worlds, plugins and mods.", 
@@ -2429,12 +2463,13 @@ public class BukkitUI extends JFrame {
         }
     }//GEN-LAST:event_deleteServerBtnActionPerformed
 
-    //========== Server Controls (Advanced) ==========\\
-
     private void updateServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateServerBtnActionPerformed
         new InstallUpdateServer(this, settings).setVisible(true);
     }//GEN-LAST:event_updateServerBtnActionPerformed
-
+    //</editor-fold>
+    
+    //========== Server Controls (Basic) ==========\\
+    //<editor-fold defaultstate="collapsed" desc="Server Controls">
     private void restartServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartServerBtnActionPerformed
         try {
             stopServer();
@@ -2449,13 +2484,11 @@ public class BukkitUI extends JFrame {
         stopServer();
     }//GEN-LAST:event_stopServerBtnActionPerformed
 
-    //<editor-fold defaultstate="collapsed" desc="Server Controls">
-    //========== Server Controls (Basic) ==========\\
-
     private void startServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startServerBtnActionPerformed
         startServer();
     }//GEN-LAST:event_startServerBtnActionPerformed
-
+    //</editor-fold>
+    
     //<< Start of Server Methods and Vars >>\\
     boolean runServer = true;
 
@@ -2717,6 +2750,7 @@ public class BukkitUI extends JFrame {
         pr.destroy();
     }
 
+    //<editor-fold defaultstate="collapsed" desc="File Builders">
     private void buildServerProps() {
         BufferedWriter writer = null;
         File serverProps = null;
@@ -2816,6 +2850,7 @@ public class BukkitUI extends JFrame {
             ex.printStackTrace(System.err);
         }
     }
+    //</editor-fold>
 
     private void playerIO() {
         Thread bannedIPs = new Thread() {
@@ -2917,10 +2952,35 @@ public class BukkitUI extends JFrame {
             }
         };
         //===============================\\
+        Thread serverPlayerThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    File players = new File(settings.getServerDir() + "/world/players");
+                    while (runServer) {
+                        serverPlayers.clear();
+                        for (File playerFile : players.listFiles((FileFilter) new DatFilter())) {
+                            String[] playerName = playerFile.getName().split("\\.");
+                            System.out.println("Found Server Player: " + playerName[0]);
+                            serverPlayers.add(new ServerPlayer(playerName[0]));
+                        }
+                        loadServerPlayers();
+                        playerImageMap = createServerPlayerImageMap();
+                        Thread.sleep(10000);
+                    }
+                    interrupt();
+                } catch (Exception ex) {
+                    System.err.println("ERROR: Error while loading server players!");
+                    ex.printStackTrace(System.err);
+                }
+            }
+        };
+        //===============================\\
         bannedIPs.start();
         bannedPlayers.start();
         operators.start();
         whiteListReader.start();
+        serverPlayerThread.start();
     }
     //</editor-fold>
 
@@ -2940,15 +3000,37 @@ public class BukkitUI extends JFrame {
         }
         return map;
     }
+    
+    private Map<String, ImageIcon> createServerPlayerImageMap() {
+        Map<String, ImageIcon> map = new HashMap<>();
+        
+        try {
+            for (ServerPlayer player : serverPlayers) {
+                map.put(player.toString(), player.getHelm());
+            }
+        } catch (Exception ex) {}
+        
+        return map;
+    }
 
     private void loadPlayers() {
         DefaultListModel model = new DefaultListModel();
         int index = 0;
         for (Player player : listOfPlayers) {
-            model.add(index, player.toString());
-            index++;
+            model.add(index++, player.toString());
         }
         playerList.setModel(model);
+    }
+    
+    private void loadServerPlayers() {
+        DefaultListModel model = new DefaultListModel();
+        int index = 0;
+        model = new DefaultListModel();
+        index = 0;
+        for (ServerPlayer player : serverPlayers) {
+            model.add(index++, player.toString());
+        }
+        serverPlayerList.setModel(model);
     }
     //</editor-fold>
 
@@ -3051,6 +3133,7 @@ public class BukkitUI extends JFrame {
     private javax.swing.JPanel jPanel26;
     private javax.swing.JPanel jPanel27;
     private javax.swing.JPanel jPanel28;
+    private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -3065,6 +3148,7 @@ public class BukkitUI extends JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextField jTextField1;
@@ -3092,6 +3176,7 @@ public class BukkitUI extends JFrame {
     private javax.swing.JButton restartServerBtn;
     private javax.swing.JButton saveBukkitYml;
     private javax.swing.JTextField serverIP;
+    private javax.swing.JList serverPlayerList;
     private javax.swing.JTextField serverPort;
     private javax.swing.JProgressBar serverProgress;
     private javax.swing.JLabel serverRuntime;
@@ -3136,6 +3221,16 @@ public class BukkitUI extends JFrame {
             return label;
         }
 
+    }
+    
+    public class ServerPlayerListCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            label.setIcon(playerImageMap.get((String) value));
+            label.setHorizontalTextPosition(JLabel.RIGHT);
+            return label;
+        }
     }
     //</editor-fold>
     

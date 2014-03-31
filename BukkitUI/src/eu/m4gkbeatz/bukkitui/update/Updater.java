@@ -30,6 +30,8 @@ public class Updater {
     URL curVerFile = null;
     URL latestVerFile = null;
     BufferedReader fileReader = null;
+    BufferedInputStream extFileReader = null;
+    FileOutputStream fileWriter = null;
     //========== Integers ==========\\
     double ver = 0;
     //\\
@@ -37,7 +39,7 @@ public class Updater {
     
     public Updater() throws MalformedURLException {
         curVerFile = this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/versionControl/bukkitui.ver");
-        latestVerFile = new URL("https://raw.githubusercontent.com/Beatsleigher/BukkitUI/master/BukkitUI/versionControl/bukkitUI.ver");
+        latestVerFile = new URL("https://github.com/Beatsleigher/BukkitUI/raw/master/BukkitUI/versionControl/bukkitUI.ver");
         
     }
     
@@ -68,9 +70,30 @@ public class Updater {
         }
     }
     
-    private void downloadUpdate() {
+    private void downloadUpdate() throws MalformedURLException, IOException {
         System.out.println("Downloading update. Please wait...");
-        
+        fileReader = new BufferedReader(new InputStreamReader(new URL("http://github.com/Beatsleigher/BukkitUI/raw/master/BukkitUI/versionControl/dlLinks.bin").openStream()));
+        String line = "";
+        while ((line = fileReader.readLine()) != null) {
+            if (line.startsWith(String.valueOf(newVer))) {
+                fileReader.close();
+                String[] array = line.split("_");
+                URL url = new URL(array[1]);
+                extFileReader = new BufferedInputStream(url.openStream());
+                array = array[1].split("/");
+                fileWriter = new FileOutputStream(array[array.length - 1]);
+                final byte[] data = new byte[1024];
+                int count = 0;
+                while ((count = extFileReader.read(data, 0, 1024)) != -1) {
+                    fileWriter.write(data, 0, count);
+                }
+                extFileReader.close();
+                fileWriter.close();
+                Runtime.getRuntime().exec(new String[] {System.getProperty("java.home"), "-jar", "/lib/BukkitUIUpdater.jar", array[array.length - 1]});
+                System.out.println("Updating software. Exiting BukkitUI...");
+                System.exit(0001);
+            }
+        }
     }
     
 }

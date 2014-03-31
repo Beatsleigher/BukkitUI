@@ -21,7 +21,7 @@
 # If true, then the server will be automatically #
 # started once BukkitUI has loaded.              #
 ##################################################
-pref::[name=startServerAutomatically, value=true]
+pref::[name=startServerAutomatically, value=false]
 
 ##################################################
 # Preference "autoDetectNewPlugins"            #
