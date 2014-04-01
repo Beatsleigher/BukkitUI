@@ -1444,6 +1444,11 @@ public class BukkitUI extends JFrame {
 
         jPanel29.setOpaque(false);
 
+        serverPlayerList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                serverPlayerListMouseClicked(evt);
+            }
+        });
         jScrollPane8.setViewportView(serverPlayerList);
 
         javax.swing.GroupLayout jPanel29Layout = new javax.swing.GroupLayout(jPanel29);
@@ -1997,7 +2002,7 @@ public class BukkitUI extends JFrame {
         jLabel41.setText("Credits:");
 
         jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Design (Look and Feel): ", "\t- JoxyLAF → KDE Oxygen Clone", "All code and the design (Actual design):", "\t- Beatsleigher.", "Zipping Tool:", "\t- Lingala Zip4J" };
+            String[] strings = { "Design (Look and Feel): ", "\t- JoxyLAF → KDE Oxygen Clone", "All code and the design (Actual design):", "\t- Beatsleigher.", "Zipping Tool:", "\t- Lingala Zip4J", "Player Skins:", "\t- minotar.net" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -2488,6 +2493,24 @@ public class BukkitUI extends JFrame {
         startServer();
     }//GEN-LAST:event_startServerBtnActionPerformed
     //</editor-fold>
+    
+    private void serverPlayerListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_serverPlayerListMouseClicked
+        /*if (serverPlayerList.getSelectedValue() != null) {
+            ServerPlayer serverPlayer = null;
+            Player player = null;
+            for (ServerPlayer _player : serverPlayers) 
+                if (_player.toString().equals(serverPlayerList.getSelectedValue().toString()))
+                    serverPlayer = _player;
+            for (Player _player : listOfPlayers)
+                if (_player.toString().equals(serverPlayerList.getSelectedValue().toString()))
+                    player = _player;
+            if (serverPlayer != null)
+                new PlayerInfo(serverPlayer, player, this).setVisible(true);
+            serverPlayerList.setSelectedIndex(-1);
+        }*/
+    }//GEN-LAST:event_serverPlayerListMouseClicked
+    
+        
     
     //<< Start of Server Methods and Vars >>\\
     boolean runServer = true;
@@ -3257,3 +3280,4 @@ public class BukkitUI extends JFrame {
     }
 
 }
+

@@ -20,6 +20,7 @@ import javax.swing.UIManager;
  * Everything from settings management and dependency installation is handled here.
  * @author beatsleigher
  */
+@SuppressWarnings({"TooBroadCatch", "UseSpecificCatch"})
 public class Main {
     
     public static void main(String[] args) {
@@ -33,8 +34,10 @@ public class Main {
             Logger log = new Logger();
             SettingsManager settings = new SettingsManager();
             
+            try {
             if (settings.checkForUpdates())
                 new Updater().checkForUpdates();
+            } catch (Exception ex) { System.err.println("ERROR: Could not download updates!"); ex.printStackTrace(System.err); }
             
             BukkitUI ui = new BukkitUI(settings, log);
             ui.setVisible(true);
