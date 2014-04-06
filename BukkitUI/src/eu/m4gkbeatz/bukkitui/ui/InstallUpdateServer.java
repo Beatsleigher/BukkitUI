@@ -144,7 +144,7 @@ public class InstallUpdateServer extends javax.swing.JFrame {
                 try {
                     jProgressBar1.setIndeterminate(true);
                     jLabel1.setText("Parsing data. Please wait...");
-                    linkMap = new HTMLParser(new URL("http://dl.bukkit.org/downloads/bukkit/")).parseFile("title=\"Download ", ".jar");
+                    linkMap = new HTMLParser(new URL("http://dl.bukkit.org/downloads/craftbukkit/")).parseFile("title=\"Download ", ".jar");
                     DefaultListModel model = new DefaultListModel();
                     
                     for (String str : linkMap.keySet()) {
@@ -178,8 +178,10 @@ public class InstallUpdateServer extends javax.swing.JFrame {
                     if (settings.getCraftbukkit().exists())
                         settings.getCraftbukkit().delete();
                     BufferedInputStream input = new BufferedInputStream(linkMap.get(jList1.getSelectedValue().toString()).openStream());
-                    FileOutputStream output = new FileOutputStream(settings.getServerDir().getAbsolutePath() + "/craftbukkit.jar");
-                    System.out.println("Downloading new server to: " + settings.getServerDir().getAbsolutePath() + "/craftbukkit.jar");
+                    File craftBukkit = new File(settings.getServerDir().getAbsolutePath() + "/craftbukkit.jar");
+                    craftBukkit.createNewFile();
+                    FileOutputStream output = new FileOutputStream(craftBukkit);
+                    System.out.println("Downloading new server to: " + craftBukkit.getAbsolutePath());
                     if (bukkitUI.serverState != BukkitUI.ServerState.OFFLINE)
                         bukkitUI.stopServerBtn.doClick();
                     final byte[] data = new byte[1024];
@@ -188,6 +190,7 @@ public class InstallUpdateServer extends javax.swing.JFrame {
                         output.write(data, 0, count);
                         System.out.println("Count: " + count);
                     }
+                    output.flush();
                     input.close();
                     output.close();
                     jLabel1.setText("Installing server...");

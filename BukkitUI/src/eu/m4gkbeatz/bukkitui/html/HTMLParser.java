@@ -69,15 +69,15 @@ public class HTMLParser {
             url = new URL(url.toString() + i);
             System.out.println("Parsing information from page " + url.toString());
             pageReader = new BufferedReader(new InputStreamReader(url.openStream()));
-        while ((line = pageReader.readLine()) != null) {
-            if (line.contains(match1) && line.contains(match2)) {
-                String[] array = line.split("title=\"");
-                array = array[1].split("\"");
-                String[] array0 = line.split("href=\"");
-                array0 = array0[1].split("\"");
-                map.put(array[0], new URL("http://dl.bukkit.org" + array0[0]));
+            while ((line = pageReader.readLine()) != null) {
+                if (line.contains(match1) && line.contains(match2)) {
+                    String[] array = line.split("title=\"");
+                    array = array[1].split("\"");
+                    String[] array0 = line.split("href=\"");
+                    array0 = array0[1].split("\"");
+                    map.put(array[0], new URL("http://dl.bukkit.org" + array0[0]));
+                }
             }
-        }
         }
         
         return map;

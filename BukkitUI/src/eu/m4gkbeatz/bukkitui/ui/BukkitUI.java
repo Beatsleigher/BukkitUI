@@ -73,6 +73,8 @@ public class BukkitUI extends JFrame {
     boolean S_PRESSED = false;
     boolean SHFT_PRESSED = false;
     boolean R_PRESSED = false;
+    //=============================================\\
+    boolean ALREADY_STARTED = false;
 
     //<editor-fold defaultstate="collapsed" desc="Constructor">
     /**
@@ -2142,8 +2144,9 @@ public class BukkitUI extends JFrame {
     //<editor-fold defaultstate="collapsed" desc="Activation and Frame Movement">
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         playerIO();
-        if (settings.startServerAutomatically() && serverState == ServerState.OFFLINE)
+        if (settings.startServerAutomatically() && serverState == ServerState.OFFLINE && !ALREADY_STARTED)
             startServer();
+        ALREADY_STARTED = true;
     }//GEN-LAST:event_formWindowActivated
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
@@ -2639,7 +2642,7 @@ public class BukkitUI extends JFrame {
                 try {
                     String line = "";
                     while ((line = processReader.readLine()) != null && runServer) {
-                        if (!line.contains("[JVM]")) {
+                        if (!line.contains("[JVM]") && !line.equals("")) {
                             consoleLog.append(line + "\n");
                             System.out.print("Craftbukkit Output: " + line + "\n");
                             if (line.toLowerCase().contains("done")) {
@@ -2989,7 +2992,7 @@ public class BukkitUI extends JFrame {
                         }
                         loadServerPlayers();
                         playerImageMap = createServerPlayerImageMap();
-                        Thread.sleep(10000);
+                        Thread.sleep(60000);
                     }
                     interrupt();
                 } catch (Exception ex) {

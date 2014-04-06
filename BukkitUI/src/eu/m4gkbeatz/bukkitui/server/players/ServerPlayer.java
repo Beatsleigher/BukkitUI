@@ -33,7 +33,6 @@ public final class ServerPlayer {
     
     public ServerPlayer(String username) throws MalformedURLException, IOException {
         this.username = username;
-        System.out.println("Downloading helm for " + toString());
         playerHelm = new ImageIcon(ImageIO.read(new URL("https://minotar.net/helm/" + toString() + "/48.png")));
     }
     
