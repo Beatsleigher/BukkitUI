@@ -172,41 +172,45 @@ public class InstallUpdateServer extends javax.swing.JFrame {
             @Override
             @SuppressWarnings("FinalizeCalledExplicitly")
             public void run() {
-                jLabel1.setText("Downloading server...");
-                jProgressBar1.setIndeterminate(true);
-                try {
-                    if (settings.getCraftbukkit().exists())
-                        settings.getCraftbukkit().delete();
-                    BufferedInputStream input = new BufferedInputStream(linkMap.get(jList1.getSelectedValue().toString()).openStream());
-                    File craftBukkit = new File(settings.getServerDir().getAbsolutePath() + "/craftbukkit.jar");
-                    craftBukkit.createNewFile();
-                    FileOutputStream output = new FileOutputStream(craftBukkit);
-                    System.out.println("Downloading new server to: " + craftBukkit.getAbsolutePath());
-                    if (bukkitUI.serverState != BukkitUI.ServerState.OFFLINE)
-                        bukkitUI.stopServerBtn.doClick();
-                    final byte[] data = new byte[1024];
-                    int count = 0;
-                    while ((count = input.read(data, 0, 1024)) != -1) {
-                        output.write(data, 0, count);
-                        System.out.println("Count: " + count);
+                int res = JOptionPane.showConfirmDialog(null, "This will irreversibly replace your current Craftbukkit server!\n"
+                        + "Are you sure you wish to continue?", "Install new Server?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (res == JOptionPane.YES_OPTION) {
+                    jLabel1.setText("Downloading server...");
+                    jProgressBar1.setIndeterminate(true);
+                    try {
+                        if (settings.getCraftbukkit().exists())
+                            settings.getCraftbukkit().delete();
+                        BufferedInputStream input = new BufferedInputStream(linkMap.get(jList1.getSelectedValue().toString()).openStream());
+                        File craftBukkit = new File(settings.getServerDir().getAbsolutePath() + "/craftbukkit.jar");
+                        craftBukkit.createNewFile();
+                        FileOutputStream output = new FileOutputStream(craftBukkit);
+                        System.out.println("Downloading new server to: " + craftBukkit.getAbsolutePath());
+                        if (bukkitUI.serverState != BukkitUI.ServerState.OFFLINE)
+                            bukkitUI.stopServerBtn.doClick();
+                        final byte[] data = new byte[1024];
+                        int count = 0;
+                        while ((count = input.read(data, 0, 1024)) != -1) {
+                            output.write(data, 0, count);
+                            System.out.println("Count: " + count);
+                        }
+                        output.flush();
+                        input.close();
+                        output.close();
+                        jLabel1.setText("Installing server...");
+                        settings.setCraftbukkit(new File(settings.getServerDir().getAbsolutePath() + "/craftbukkit.jar")); 
+                        jLabel1.setText("");
+                        jProgressBar1.setIndeterminate(false);
+                        int result = JOptionPane.showConfirmDialog(null, "INFORMATION: The server was successfully installed!\n"
+                                + "Do you want to start it now?", "Start Server?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                        if (result == JOptionPane.YES_OPTION)
+                            bukkitUI.startServerBtn.doClick(); 
+                    } catch (Exception ex) {
+                        System.err.println("ERROR: Error while downloading and installing the server!");
+                        ex.printStackTrace(System.err);
+                        JOptionPane.showMessageDialog(null, "ERROR: Error while downloading and installing the server!\n"
+                                + ex.toString() + "\n"
+                                + "The stack trace was printed to the console...", "Error Installing Server!", JOptionPane.ERROR_MESSAGE);
                     }
-                    output.flush();
-                    input.close();
-                    output.close();
-                    jLabel1.setText("Installing server...");
-                    settings.setCraftbukkit(new File(settings.getServerDir().getAbsolutePath() + "/craftbukkit.jar")); 
-                    jLabel1.setText("");
-                    jProgressBar1.setIndeterminate(false);
-                    int result = JOptionPane.showConfirmDialog(null, "INFORMATION: The server was successfully installed!\n"
-                            + "Do you want to start it now?", "Start Server?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                    if (result == JOptionPane.YES_OPTION)
-                        bukkitUI.startServerBtn.doClick(); 
-                } catch (Exception ex) {
-                    System.err.println("ERROR: Error while downloading and installing the server!");
-                    ex.printStackTrace(System.err);
-                    JOptionPane.showMessageDialog(null, "ERROR: Error while downloading and installing the server!\n"
-                            + ex.toString() + "\n"
-                            + "The stack trace was printed to the console...", "Error Installing Server!", JOptionPane.ERROR_MESSAGE);
                 }
                 interrupt();
             }

@@ -13,7 +13,10 @@ import eu.m4gkbeatz.bukkitui.update.Updater;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+
+import joxy.JoxyLookAndFeel;
 
 /**
  * BukkitUI's entry-class.
@@ -43,10 +46,13 @@ public class Main {
             ui.setVisible(true);
             
         } catch (Exception ex) {
-            System.err.println("ERROR: Error while starting Universal Android Toolkit!");
+            JOptionPane.showMessageDialog(null, "ERROR: Error while starting BukkitUI!\n"
+                    + "Type of error: " + ex.toString() + "\n"
+                    + "BukkitUI will now exit.", "Error While Starting", JOptionPane.ERROR_MESSAGE);
+            System.err.println("ERROR: Error while starting BukkitUI!");
             System.err.println(ex.toString());
             ex.printStackTrace(System.err);
-            System.exit(0);
+            System.exit(1);
         }
     }
     

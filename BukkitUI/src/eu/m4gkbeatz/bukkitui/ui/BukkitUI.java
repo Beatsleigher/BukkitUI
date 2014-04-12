@@ -27,7 +27,11 @@ import eu.m4gkbeatz.bukkitui.logging.Logger;
 import eu.m4gkbeatz.bukkitui.settings.*;
 import eu.m4gkbeatz.bukkitui.io.*;
 import eu.m4gkbeatz.bukkitui.server.players.*;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Document;
 
 /**
  *
@@ -40,7 +44,7 @@ public class BukkitUI extends JFrame {
     private final ImageIcon ONLINE = new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/circle_green_24.png"));
     private final ImageIcon OFFLINE = new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/circle_red_24.png"));
     private final ImageIcon WORKING = new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/circle_orange_24.png"));
-
+    
     /**
      * Enumeration containing possible server states.
      */
@@ -48,7 +52,7 @@ public class BukkitUI extends JFrame {
 
         OFFLINE, ONLINE, STARTING, INSTALLING, REBOOTING
     }
-
+    
     Map<String, ImageIcon> imageMap = null;
     Map<String, ImageIcon> playerImageMap = null;
     Point origin = this.getLocation();
@@ -75,7 +79,7 @@ public class BukkitUI extends JFrame {
     boolean R_PRESSED = false;
     //=============================================\\
     boolean ALREADY_STARTED = false;
-
+    
     //<editor-fold defaultstate="collapsed" desc="Constructor">
     /**
      * Creates new JFrame BukkitUI.
@@ -96,7 +100,7 @@ public class BukkitUI extends JFrame {
         serverPlayerList.setCellRenderer(new ServerPlayerListCellRenderer());
     }
     //</editor-fold>
-
+    
     //<editor-fold defaultstate="collapsed" desc="More Big Methods...">
     private void applySettings() {
         DefaultComboBoxModel model = new DefaultComboBoxModel();
@@ -458,7 +462,7 @@ public class BukkitUI extends JFrame {
         }
     }
     //</editor-fold>
-
+    
     //<editor-fold defaultstate="collapsed" desc="Some Generated Code. Nothing too Important...">
     /**
      * This method is called from within the constructor to initialize the form.
@@ -479,6 +483,7 @@ public class BukkitUI extends JFrame {
         jPanel6 = new javax.swing.JPanel();
         updateServerBtn = new javax.swing.JButton();
         deleteServerBtn = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
@@ -741,6 +746,15 @@ public class BukkitUI extends JFrame {
             }
         });
 
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/server_administration/data_backup-32.png"))); // NOI18N
+        jButton1.setText("Backup/Restore");
+        jButton1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -749,8 +763,9 @@ public class BukkitUI extends JFrame {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(updateServerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(deleteServerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                    .addComponent(deleteServerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -759,7 +774,9 @@ public class BukkitUI extends JFrame {
                 .addComponent(updateServerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deleteServerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -2017,17 +2034,17 @@ public class BukkitUI extends JFrame {
             .addGroup(jPanel28Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel41, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                    .addComponent(jLabel41, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel28Layout.setVerticalGroup(
             jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel28Layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel41)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -2045,8 +2062,9 @@ public class BukkitUI extends JFrame {
                             .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(6, 6, 6)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -2055,16 +2073,16 @@ public class BukkitUI extends JFrame {
                 .addContainerGap()
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(52, Short.MAX_VALUE))
         );
 
@@ -2471,9 +2489,14 @@ public class BukkitUI extends JFrame {
         }
     }//GEN-LAST:event_deleteServerBtnActionPerformed
 
-    private void updateServerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateServerBtnActionPerformed
+    private void updateServerBtnActionPerformed(java.awt.event.ActionEvent evt) {                                                    
+    
         new InstallUpdateServer(this, settings).setVisible(true);
-    }//GEN-LAST:event_updateServerBtnActionPerformed
+    }                                               
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        new BackupRestore(settings, this).setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
     //</editor-fold>
     
     //========== Server Controls (Basic) ==========\\
@@ -2512,9 +2535,7 @@ public class BukkitUI extends JFrame {
             serverPlayerList.setSelectedIndex(-1);
         }*/
     }//GEN-LAST:event_serverPlayerListMouseClicked
-    
         
-    
     //<< Start of Server Methods and Vars >>\\
     boolean runServer = true;
 
@@ -2641,6 +2662,7 @@ public class BukkitUI extends JFrame {
             public void run() {
                 try {
                     String line = "";
+                    highlight();
                     while ((line = processReader.readLine()) != null && runServer) {
                         if (!line.contains("[JVM]") && !line.equals("")) {
                             consoleLog.append(line + "\n");
@@ -2755,6 +2777,7 @@ public class BukkitUI extends JFrame {
         System.out.print("Stopping server...");
         try {
             processWriter.write("stop");
+            processWriter.flush();
             runServer = false;
             Thread.sleep(3000);
             pr.destroy();
@@ -2774,6 +2797,10 @@ public class BukkitUI extends JFrame {
     private void killServer() {
         runServer = false;
         pr.destroy();
+        try {
+        processReader.close();
+        processWriter.close();
+        } catch (IOException ex) {}
     }
 
     //<editor-fold defaultstate="collapsed" desc="File Builders">
@@ -2890,7 +2917,7 @@ public class BukkitUI extends JFrame {
                             BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
                             String line = "";
                             while ((line = reader.readLine()) != null) {
-                                model.addElement(line);
+                                if (!line.startsWith("#")) model.addElement(line);
                             }
                             bannedIPList.setModel(model);
                             Thread.sleep(10000);
@@ -2915,7 +2942,7 @@ public class BukkitUI extends JFrame {
                             BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
                             String line = "";
                             while ((line = reader.readLine()) != null) {
-                                model.addElement(line);
+                                if (!line.startsWith("#")) model.addElement(line);
                             }
                             bannedPlayersList.setModel(model);
                             Thread.sleep(10000);
@@ -2940,7 +2967,7 @@ public class BukkitUI extends JFrame {
                             BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
                             String line = "";
                             while ((line = reader.readLine()) != null) {
-                                model.addElement(line);
+                                if (!line.startsWith("#")) model.addElement(line);
                             }
                             operatorsList.setModel(model);
                             Thread.sleep(10000);
@@ -2965,7 +2992,7 @@ public class BukkitUI extends JFrame {
                             BufferedReader reader = new BufferedReader(new FileReader(bannedIPs));
                             String line = "";
                             while ((line = reader.readLine()) != null) {
-                                model.addElement(line);
+                                if (!line.startsWith("#")) model.addElement(line);
                             }
                             whitelist.setModel(model);
                             Thread.sleep(10000);
@@ -3009,7 +3036,7 @@ public class BukkitUI extends JFrame {
         serverPlayerThread.start();
     }
     //</editor-fold>
-
+    
     //========== Player Management ==========\\
     //<editor-fold defaultstate="collapsed" desc="      ">
     private Map<String, ImageIcon> createPlayerImageMap() {
@@ -3059,7 +3086,7 @@ public class BukkitUI extends JFrame {
         serverPlayerList.setModel(model);
     }
     //</editor-fold>
-
+    
     //<editor-fold defaultstate="collapsed" desc="Variables.">
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBannedIP;
@@ -3095,6 +3122,7 @@ public class BukkitUI extends JFrame {
     private javax.swing.JComboBox gameMode;
     private javax.swing.JTextField gcPeriodInTicksTxtBox;
     private javax.swing.JCheckBox generateStructures;
+    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -3229,7 +3257,7 @@ public class BukkitUI extends JFrame {
     private javax.swing.JList whitelist;
     // End of variables declaration//GEN-END:variables
 //</editor-fold>
-
+    
     //========== Internal Classes ===========\\    
     //<editor-fold defaultstate="collapsed" desc="      ">
     /**
@@ -3281,6 +3309,98 @@ public class BukkitUI extends JFrame {
             file.delete();
         }
     }
+    
+    //========== Console Highlighting ===========\\
+    //<editor-fold defaultstate="collapsed" desc="Highlighter Method">
+    String h1 = "FINE", h2 = "FINER", h3 = "FINEST", h4 = "INFO", h5 = "SEVERE", h6 = "WARNING";
 
+    private void highlight() {
+        new Thread() {
+            /**
+             * Highlight all words that should be highlighted. Colours:
+             *
+             * @see <h1/> :: Color.green
+             * @see <h2/> :: Color.green
+             * @see <h3/> :: Color.green
+             * @see <h4/> :: Color.blue
+             * @see <h5/> :: Color.red
+             * @see <h5/> :: Color.yellow
+             */
+            @Override
+            public void run() {
+                while (runServer) {
+                    Document doc = consoleLog.getDocument();
+                    try {
+                        
+                        for (int idx = 0; idx + h1.length() < doc.getLength(); idx++) { /*highlight h1*/
+
+                            String match = doc.getText(idx, h1.length());
+                            if (h1.equals(match)) {
+                                DefaultHighlighter.DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
+                                consoleLog.getHighlighter().addHighlight(idx, idx + h1.length(), painter);
+                            }
+                        }
+
+                        for (int idx = 0; idx + h2.length() < doc.getLength(); idx++) { /*highlight h2*/
+
+                            String match = doc.getText(idx, h2.length());
+                            if (h2.equals(match)) {
+                                DefaultHighlighter.DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
+                                consoleLog.getHighlighter().addHighlight(idx, idx + h2.length(), painter);
+                            }
+                        }
+
+                        for (int idx = 0; idx + h3.length() < doc.getLength(); idx++) { /*highlight h3*/
+
+                            String match = doc.getText(idx, h3.length());
+                            if (h3.equals(match)) {
+                                DefaultHighlighter.DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
+                                consoleLog.getHighlighter().addHighlight(idx, idx + h3.length(), painter);
+                            }
+                        }
+
+                        for (int idx = 0; idx + h4.length() < doc.getLength(); idx++) { /*highlight h4*/
+
+                            String match = doc.getText(idx, h4.length());
+                            if (h4.equals(match)) {
+                                DefaultHighlighter.DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
+                                consoleLog.getHighlighter().addHighlight(idx, idx + h4.length(), painter);
+                            }
+                        }
+
+                        for (int idx = 0; idx + h5.length() < doc.getLength(); idx++) { /*highlight h5*/
+
+                            String match = doc.getText(idx, h5.length());
+                            if (h5.equals(match)) {
+                                DefaultHighlighter.DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.red);
+                                consoleLog.getHighlighter().addHighlight(idx, idx + h5.length(), painter);
+                            }
+                        }
+
+                        for (int idx = 0; idx + h6.length() < doc.getLength(); idx++) { /*highlight h6*/
+
+                            String match = doc.getText(idx, h6.length());
+                            if (h6.equals(match)) {
+                                DefaultHighlighter.DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.yellow);
+                                consoleLog.getHighlighter().addHighlight(idx, idx + h6.length(), painter);
+                            }
+                        }
+                        
+                        for (int i = 0; i != 500; i++) {}
+                        
+                    } catch (BadLocationException ex) {
+                        System.err.println("ERROR: Error highlighting console output!");
+                        ex.printStackTrace(System.err);
+                        consoleLog.append("[BukkitUI] [SEVERE] Error while highlighting console output! Highlighting will restart after server reboot.\n");
+                        interrupt();
+                        break;
+                    }
+                    interrupt();
+                }
+            }
+        }.start();
+    }
+    //</editor-fold>
+    
 }
 
