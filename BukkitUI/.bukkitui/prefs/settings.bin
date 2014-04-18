@@ -1,0 +1,87 @@
+############################## BukkitUI User Preferences ##############################
+#                                                                                     #
+# ===== Index =====                                                                   #
+# [#] » Comment. Everything behing a hash will be ignored.                            #
+# [### EOF ###] » End of File. Once this stand-a-lone line was detected,              #
+#                 the file will be closed.                                            #
+# [pref::] » Preference-start. Indicates a preference is to be found.                 #
+# [name=] » Preference name. This indicates the preference's name.                    #
+# [value=] » Preference value. The value of the preference.                           #
+# ===== Index =====                                                                   #
+#                                                                                     #
+############################## BukkitUI User Preferences ##############################
+
+#########################################################
+# Current settings location: .bukkitui/prefs           #
+# This has no impact on BukkitUI.                       #
+#########################################################
+
+##################################################
+# Preference "startServerAutomatically"        #
+# If true, then the server will be automatically #
+# started once BukkitUI has loaded.              #
+##################################################
+pref::[name=startServerAutomatically, value=false]
+
+##################################################
+# Preference "autoDetectNewPlugins"            #
+# If true, BukkitUI will notify the user that a  #
+# new plugin has been detected, and will ask     #
+# the server should be restarted or not.         #
+##################################################
+pref::[name=autoDetectNewPlugins, value=false]
+
+##################################################
+# Preference "checkForUpdates"                 #
+# If true, then BukkitUI will have a seperate    #
+# thread (mini-process) running in the back-     #
+# ground, which will check for updates for       #
+# BukkitUI AND Craftbukkit.                      #
+##################################################
+pref::[name=checkForUpdates, value=false]
+
+##################################################
+# Preference "serverDir"                       #
+# This setting is a vital part of BukkitUI. If   #
+# this setting is incorrect, then the entire     #
+# program will fail.                             #
+##################################################
+pref::[name=serverDir, value=/home/beatsleigher/Tekkit_Server_3.1.2]
+
+##################################################
+# Preference "craftbukkit"                     #
+# This setting contains the filename of the      #
+# Bukkit server JAR. If this setting is wrong,   #
+# then the program will be flooded with errors.  #
+##################################################
+pref::[name=craftbukkit, value=/home/beatsleigher/Tekkit_Server_3.1.2/craftbukkit.jar]
+
+##################################################
+# Preference "layout"                          #
+# This setting controls the look of BukkitUI's   #
+# main user interface.                           #
+##################################################
+pref::[name=layout, value=BukkitUI_orange]
+
+##################################################
+# Preference "java"                            #
+# This preference is for the JVM and should NOT  #
+# be changed unless it is absolutely necessary!  #
+##################################################
+pref::[name=java, value=/home/beatsleigher/jdk1.7.0_51/jre/bin/java]
+
+##################################################
+# Preference "useWebServer"                    #
+# This setting is for remote users, or if you're #
+# away from your computer when using BukkitUI!   #
+# When true, you must supply the server with a   #
+# working directory (workspace) where all the    #
+# files will be installed to. You can NEVER      #
+# the contents of this folder, or you'll break   #
+# the web server!                                #
+# Also, you must provide an IP address and a     #
+# username, with password. (Single user).        #
+##################################################
+pref::[name=useWebServer, value=true]
+
+### EOF ###

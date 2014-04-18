@@ -1,0 +1,76 @@
+############################## BukkitUI Web Server Preferences ##############################
+## ========== Index ==========                                                              #
+## [#] => Comment. These lines will be ignored.                                             #
+## [pref::] => Pref initializer. A line starting with this will be attempted to be inter-   #
+## 	 interpreted.                                                                      #
+## [name=] => The name of a preference. Warning: Case-sensitive!                            #
+## [value=] => The value of a preference. Warning: Case-sensitive!                          #
+## [### EOF ###] => End of File. When detected, the file will be closed immediately.        #
+##############################/BukkitUI Web Server Preferences ##############################
+
+##########################################################################################
+# Current file location: /home/beatsleigher/code/Java/BukkitUI/BukkitUI/.bukkitui/prefs/webServer.bin                     #
+##########################################################################################
+
+##############################
+# Preference "ip".           #
+# The IP address of your     #
+# webserver. Make sure it's  #
+# the same as your server's  #
+# IP address, for best       #
+# results.                   #
+# Default: 127.0.0.1         #
+# - localhost                #
+##############################
+pref::[name=ip, value=127.0.0.1]
+
+#########################################
+# Preference "maxNumberOfUsers"         #
+# Depending on this number, you can have#
+# N-amount of users on this webserver.  #
+# Default: 1                            #
+#########################################
+pref::[name=maxNumberOfUsers, value=1]
+
+#########################################
+# Preference "port"                     #
+# This setting represents the port your #
+# webserver will run on.                #
+# Default: 23287                        #
+#########################################
+pref::[name=port, value=23278]
+
+#########################################
+# Preference "serverRoot"               #
+# Be careful, here. You might just break#
+# everything!                           #
+# I recommend leaving it at the default.#
+# Default:                              #
+# /home/beatsleigher/code/Java/BukkitUI/BukkitUI/.web/server/admin/remoteaccess                 #
+#########################################
+pref::[name=webServerRoot, value=/home/beatsleigher/code/Java/BukkitUI/BukkitUI/.web/server/admin/remoteaccess]
+
+##############################
+# Preference "users"         #
+# This is a special type of  #
+# preference. Please read the#
+# rules of users:            #
+# - No spaces!               #
+# - Keep it Unicode!         #
+# - Alwys use correct        #
+# 	formatting!          #
+# A TAB before each user!    #
+#                            #
+# Example:                   #
+# user::[name=x, pass=y]     #
+# Default user (always       #
+# 	 exists):            #
+# user=BukkitUI,             #
+# pass=LinuxDeathMachine     #
+##############################
+pref::[name=user] {
+	user::[name=BukkitUI, pass=LinuxDeathMachine]
+
+}
+
+### EOF ###
