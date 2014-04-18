@@ -20,6 +20,8 @@ package eu.m4gkbeatz.bukkitui.settings;
 import eu.m4gkbeatz.bukkitui.io.JarFilter;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -46,10 +48,13 @@ public final class SettingsManager {
     boolean useWebServer = false;
     int maxNumberOfUsers = 1;
     String IP = "127.0.0.1";
-    String users[] =     {"BukkitUI"};
-    String passwords[] = {"LinuxDeathMachine"};
+    int serverPort = 23278;
+    List<String> users = new ArrayList<>();
+    List<String> passwords = new ArrayList<>();
     File webServerSettings = null;
+    File webServerRoot = null;
     
+    //<editor-fold defaultstate="collapsed" desc="Prefs, Constructor, Init, Load and Save methods...">
     /**
      * Collects information from variables and saves them into a String.
      * @return String containing variables.
@@ -154,7 +159,7 @@ public final class SettingsManager {
         try {
             prefsDir = new File(".bukkitui/prefs");
             prefs = new File(prefsDir.getAbsolutePath() + "/settings.bin");
-            webServerSettings = new File(prefsDir.getAbsolutePath() + "webServer.bin");
+            webServerSettings = new File(prefsDir.getAbsolutePath() + "/webServer.bin");
             System.out.println("Loading preferences...");
             load();
         } catch (IOException ex) {
@@ -256,10 +261,8 @@ public final class SettingsManager {
                     String[] arr = line.split("value="), arr0 = arr[1].split("]");
                     useWebServer = Boolean.valueOf(arr0[0]);
                     System.out.println(" = " + arr0[0]);
-                    if (useWebServer) {
-                        System.out.println("Loading webserver components. Please be patient...");
-                        loadWebServerData();
-                    }
+                    System.out.println("Loading webserver components. Please be patient...");
+                    loadWebServerData();
                     continue;
                 }
                 
@@ -271,7 +274,9 @@ public final class SettingsManager {
         BufferedWriter writer = new BufferedWriter(new FileWriter(prefs));
         writer.write(prefs());
         writer.close();
+        saveWebServerData();
     }
+    //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Getter/Setter">
     //============ Getter Methods ============\\
@@ -289,6 +294,22 @@ public final class SettingsManager {
     
     public File getJava() { return java; }
     
+    public boolean useWebServer() { return useWebServer; }
+    
+    public int webServer_getMaxNumberOfUsers() { return maxNumberOfUsers; }
+    
+    public List<String> webServer_getUsers() { return users; }
+    
+    public List<String> webServer_getPasswords() { return passwords; }
+    
+    public String webServer_getIP() { return IP; }
+    
+    public int webServer_getPort() { return serverPort; }
+    
+    public File webServer_getServerRoot() { return webServerRoot; }
+    
+    public File getWebServerPrefsFile() { return webServerSettings; }
+    
     //============ Setter Methods ============\\
     public void setStartServerAutomatically(boolean newVal) { startServerAutomatically = newVal; }
     
@@ -303,11 +324,28 @@ public final class SettingsManager {
     public void setLayout(BukkitUI_Layout newVal) { layout = newVal; }
     
     public void setJava(File newVal) { java = newVal; }
+    
+    public void setUseWebServer(boolean newVal) { useWebServer = newVal; }
+    
+    public void webServer_setMaxNumberOfUsers(int newVal) { maxNumberOfUsers = newVal; }
+    
+    public void webServer_setUsers(List<String> newUsers, List<String> newPasswords) { users = newUsers; passwords = newPasswords; }
+    
+    public void webServer_addUser(String newUser, String newPassword) { users.add(newUser); passwords.add(newPassword); }
+    
+    public void webServer_setIP(String newVal) { IP = newVal; }
+    
+    public void webServer_setPort(int newPort) { serverPort = newPort; }
+    
+    public void webServer_setServerRoot(File newVal) { webServerRoot = newVal; }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Web Server">
-    private void loadWebServerData() throws IOException {
+    public void loadWebServerData() throws IOException {
+        users.clear();
+        passwords.clear();
         if (!webServerSettings.exists()) {
+            webServerRoot = new File(".web/server/admin/remoteaccess");
             saveWebServerData();
             for (int i = 0; i != 500; i++) {} // Do something to occupy the program, to ensure filesystem has enough time to do its shit. Fuck you, Windows!
         }
@@ -331,17 +369,33 @@ public final class SettingsManager {
                     System.out.println(" = " + arr0[0]);
                     continue;
                 }
+                if (line.contains("name=port")) {
+                    System.out.print("Found web server pref: port");
+                    String[] arr = line.split("value="); arr = arr[1].split("]");
+                    serverPort = Integer.valueOf(arr[0]);
+                    System.out.println(" = " + serverPort);
+                    continue;
+                }
+                if (line.contains("name=webServerRoot")) {
+                    System.out.print("Found web server pref: serverRoot");
+                    String[] arr = line.split("value="); arr = arr[1].split("]");
+                    webServerRoot = new File(arr[0]);
+                    System.out.println(" = " + arr[0]);
+                    continue;
+                }
                 if (line.contains("name=user") && line.endsWith("{")) {
-                    System.out.println("Found user block!");
+                    System.out.println("Found user block. Adding users...");
                     int i = 0;
+                    users.clear();
+                    passwords.clear();
                     do {
                         line = reader.readLine();
                         if (line.startsWith("\tuser::")) {
                             String[] arr = line.split("name="), arr0 = arr[1].split(",");
                             String[] arr1 = line.split("pass="), arr2 = arr1[1].split("]");
                             System.out.println("Found user: " + arr0[0]);
-                            users[i] = arr0[0];
-                            passwords[i] = arr2[0];
+                            users.add(arr0[0]);
+                            passwords.add(arr2[0]);
                             i++;
                         }
                     } while (!line.startsWith("}"));
@@ -359,12 +413,12 @@ public final class SettingsManager {
         writer.close();
     }
     
-    private String webServerPrefs() {
+    private String webServerPrefs() { // Change the formatting of this file and your die.
         String s= "############################## BukkitUI Web Server Preferences ##############################\n"
                 + "## ========== Index ==========                                                              #\n"
                 + "## [#] => Comment. These lines will be ignored.                                             #\n"
                 + "## [pref::] => Pref initializer. A line starting with this will be attempted to be inter-   #\n"
-                + "## \t interpreted.                                                                          #\n"
+                + "## \t interpreted.                                                                      #\n"
                 + "## [name=] => The name of a preference. Warning: Case-sensitive!                            #\n"
                 + "## [value=] => The value of a preference. Warning: Case-sensitive!                          #\n"
                 + "## [### EOF ###] => End of File. When detected, the file will be closed immediately.        #\n"
@@ -375,7 +429,7 @@ public final class SettingsManager {
                 + "##########################################################################################\n\n"
                 //
                 + "##############################\n"
-                + "# Preference \"ip\".         #\n"
+                + "# Preference \"ip\".           #\n"
                 + "# The IP address of your     #\n"
                 + "# webserver. Make sure it's  #\n"
                 + "# the same as your server's  #\n"
@@ -387,42 +441,58 @@ public final class SettingsManager {
                 + "pref::[name=ip, value=" + IP + "]\n\n"
                 //
                 + "#########################################\n"
-                + "# Preference \"maxNumberOfUsers\"       #\n"
+                + "# Preference \"maxNumberOfUsers\"         #\n"
                 + "# Depending on this number, you can have#\n"
                 + "# N-amount of users on this webserver.  #\n"
                 + "# Default: 1                            #\n"
                 + "#########################################\n"
                 + "pref::[name=maxNumberOfUsers, value=" + maxNumberOfUsers + "]\n\n"
                 //
+                + "#########################################\n"
+                + "# Preference \"port\"                     #\n"
+                + "# This setting represents the port your #\n"
+                + "# webserver will run on.                #\n"
+                + "# Default: 23287                        #\n"
+                + "#########################################\n"
+                + "pref::[name=port, value=" + serverPort + "]\n\n"
+                //
+                + "#########################################\n"
+                + "# Preference \"serverRoot\"               #\n"
+                + "# Be careful, here. You might just break#\n"
+                + "# everything!                           #\n"
+                + "# I recommend leaving it at the default.#\n"
+                + "# Default:                              #\n"
+                + "# " + webServerRoot.getAbsolutePath() + "                 #\n"
+                + "#########################################\n"
+                + "pref::[name=webServerRoot, value=" + webServerRoot.getAbsolutePath() + "]\n\n"
+                //
                 + "##############################\n"
-                + "# Preference \"users\"       #\n"
+                + "# Preference \"users\"         #\n"
                 + "# This is a special type of  #\n"
                 + "# preference. Please read the#\n"
                 + "# rules of users:            #\n"
                 + "# - No spaces!               #\n"
                 + "# - Keep it Unicode!         #\n"
                 + "# - Alwys use correct        #\n"
-                + "# \tformatting!              #\n"
+                + "# \tformatting!          #\n"
                 + "# A TAB before each user!    #\n"
                 + "#                            #\n"
                 + "# Example:                   #\n"
                 + "# user::[name=x, pass=y]     #\n"
                 + "# Default user (always       #\n"
-                + "# \t exists):                #\n"
+                + "# \t exists):            #\n"
                 + "# user=BukkitUI,             #\n"
                 + "# pass=LinuxDeathMachine     #\n"
                 + "##############################\n"
                 + "pref::[name=user] {\n"
                 + "\tuser::[name=BukkitUI, pass=LinuxDeathMachine]\n";
-        for (int i = 0; i < users.length; i++) {
-            if (!users[i].equals("BukkitUI")) 
-                s += "user::[name=" + users[i] + ", pass=" + passwords[i] + "]\n";
-            if (i == users.length)
-                s += "}\n### EOF ###";
-        }
+        for (int i = 0; i < users.size(); i++)
+            if (!users.get(i).equals("BukkitUI")) 
+                s += "\tuser::[name=" + users.get(i) + ", pass=" + passwords.get(i) + "]\n";
+        s += "\n}\n\n### EOF ###";
         
         return s;
     }
     //</editor-fold>
-     
+
 }

@@ -16,7 +16,6 @@
  */
 package eu.m4gkbeatz.bukkitui.ui;
 
-import eu.m4gkbeatz.bukkitui.help.CommandHelp;
 import javax.swing.*;
 import java.io.*;
 import java.awt.Point;
@@ -27,7 +26,13 @@ import eu.m4gkbeatz.bukkitui.logging.Logger;
 import eu.m4gkbeatz.bukkitui.settings.*;
 import eu.m4gkbeatz.bukkitui.io.*;
 import eu.m4gkbeatz.bukkitui.server.players.*;
+import eu.m4gkbeatz.bukkitui.help.CommandHelp;
+import eu.m4gkbeatz.bukkitui.ui.context.PlayerContextMenu;
+import eu.m4gkbeatz.bukkitui.webserver.WebServer;
+
 import java.awt.Color;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
@@ -79,6 +84,8 @@ public class BukkitUI extends JFrame {
     boolean R_PRESSED = false;
     //=============================================\\
     boolean ALREADY_STARTED = false;
+    //=============================================\\
+    private WebServer webServer = null;
     
     //<editor-fold defaultstate="collapsed" desc="Constructor">
     /**
@@ -86,11 +93,13 @@ public class BukkitUI extends JFrame {
      *
      * @param settings
      * @param log
+     * @param webServer
+     * @throws java.io.IOException
      */
-    public BukkitUI(SettingsManager settings, Logger log) {
+    public BukkitUI(SettingsManager settings, Logger log, WebServer webServer) throws IOException {
         this.settings = settings;
         this.log = log;
-        this.setLocationRelativeTo(null);
+        setLocation();
         this.setIconImage(new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/icon.png")).getImage());
         initComponents();
         backgroundImage.setIcon(new ImageIcon(this.getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/design_layout/" + settings.getLayout() + ".png")));
@@ -98,6 +107,26 @@ public class BukkitUI extends JFrame {
         loadServerInfo();
         serverProgress.setVisible(false);
         serverPlayerList.setCellRenderer(new ServerPlayerListCellRenderer());
+        if (webServer != null)
+            this.webServer = webServer;
+        else
+            this.webServer = new WebServer(settings, this);
+    }
+    
+    private void setLocation() {
+        int xPos = 0, yPos = 0;
+        System.out.print("Collecting system information [SCREEN_SIZE] {");
+        /*Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        xPos = screenSize.width / 2 - getX() / 2;
+        yPos = screenSize.height / 2 - getX() / 2;*/
+        GraphicsDevice gDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int x = gDevice.getDisplayMode().getWidth();
+        int y = gDevice.getDisplayMode().getHeight();
+        System.out.print(x + ", " + y + " :: ");
+        xPos = (x / 2) - (getX() / 2);
+        yPos = (y / 2) - (getY() / 2);
+        System.out.println(xPos + ", " + yPos + "}\nSetting window location...");
+        this.setLocation(new Point(xPos, yPos));
     }
     //</editor-fold>
     
@@ -633,6 +662,9 @@ public class BukkitUI extends JFrame {
         jLabel41 = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
+        jPanel30 = new javax.swing.JPanel();
+        jLabel42 = new javax.swing.JLabel();
+        showWebServerSettings = new javax.swing.JButton();
         serverStatusLabel = new javax.swing.JLabel();
         closeBtn = new javax.swing.JButton();
         minimizeBtn = new javax.swing.JButton();
@@ -860,6 +892,16 @@ public class BukkitUI extends JFrame {
         jPanel22.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel22.setOpaque(false);
 
+        playerList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                playerListMouseClicked(evt);
+            }
+        });
+        playerList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                playerListValueChanged(evt);
+            }
+        });
         jScrollPane6.setViewportView(playerList);
 
         javax.swing.GroupLayout jPanel22Layout = new javax.swing.GroupLayout(jPanel22);
@@ -2034,18 +2076,53 @@ public class BukkitUI extends JFrame {
             .addGroup(jPanel28Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
-                    .addComponent(jLabel41, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
+                    .addComponent(jLabel41, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel28Layout.setVerticalGroup(
             jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel28Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jLabel41)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane7)
                 .addContainerGap())
+        );
+
+        jPanel30.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel30.setOpaque(false);
+
+        jLabel42.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel42.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel42.setText("Web Server Settings");
+
+        showWebServerSettings.setText("Show Settings");
+        showWebServerSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showWebServerSettingsActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel30Layout = new javax.swing.GroupLayout(jPanel30);
+        jPanel30.setLayout(jPanel30Layout);
+        jPanel30Layout.setHorizontalGroup(
+            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel30Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(showWebServerSettings)
+                    .addComponent(jLabel42, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel30Layout.setVerticalGroup(
+            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel30Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel42)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(showWebServerSettings)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -2063,7 +2140,9 @@ public class BukkitUI extends JFrame {
                             .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel30, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(6, 6, 6)))
                 .addContainerGap())
         );
@@ -2073,17 +2152,21 @@ public class BukkitUI extends JFrame {
                 .addContainerGap()
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 40, Short.MAX_VALUE))
+                    .addComponent(jPanel30, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/eu/m4gkbeatz/bukkitui/resources/design_layout/settings_tab.png")), jPanel4); // NOI18N
@@ -2164,6 +2247,8 @@ public class BukkitUI extends JFrame {
         playerIO();
         if (settings.startServerAutomatically() && serverState == ServerState.OFFLINE && !ALREADY_STARTED)
             startServer();
+        if (settings.useWebServer() && !ALREADY_STARTED)
+            //webServer.run();
         ALREADY_STARTED = true;
     }//GEN-LAST:event_formWindowActivated
 
@@ -2216,6 +2301,7 @@ public class BukkitUI extends JFrame {
             settings.save();
             System.exit(1024);
         } catch (Exception ex) {
+            System.exit(1);
         }
     }//GEN-LAST:event_closeBtnActionPerformed
     //</editor-fold>
@@ -2535,6 +2621,22 @@ public class BukkitUI extends JFrame {
             serverPlayerList.setSelectedIndex(-1);
         }*/
     }//GEN-LAST:event_serverPlayerListMouseClicked
+
+    private void showWebServerSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showWebServerSettingsActionPerformed
+        new WebServerSettings(settings).setVisible(true);
+    }//GEN-LAST:event_showWebServerSettingsActionPerformed
+
+    private void playerListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_playerListValueChanged
+        
+    }//GEN-LAST:event_playerListValueChanged
+
+    private void playerListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_playerListMouseClicked
+        Point p = evt.getLocationOnScreen();
+        if (playerList.getSelectedValue() != null)
+            new PlayerContextMenu(playerList.getSelectedValue().toString(), p, processWriter).setVisible(true);
+        else if (System.getProperty("user.name").equals("beatsleigher") && System.getProperty("os.name").equals("Linux"))
+            new PlayerContextMenu("Beatsleigher", p, processWriter).setVisible(true);
+    }//GEN-LAST:event_playerListMouseClicked
         
     //<< Start of Server Methods and Vars >>\\
     boolean runServer = true;
@@ -3160,6 +3262,7 @@ public class BukkitUI extends JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -3189,6 +3292,7 @@ public class BukkitUI extends JFrame {
     private javax.swing.JPanel jPanel28;
     private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel30;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -3235,6 +3339,7 @@ public class BukkitUI extends JFrame {
     private javax.swing.JProgressBar serverProgress;
     private javax.swing.JLabel serverRuntime;
     private javax.swing.JLabel serverStatusLabel;
+    private javax.swing.JButton showWebServerSettings;
     private javax.swing.JTextField shutdownMessageTxtBox;
     private javax.swing.JCheckBox spawnAnimals;
     private javax.swing.JCheckBox spawnMonsters;

@@ -10,13 +10,12 @@ import eu.m4gkbeatz.bukkitui.logging.Logger;
 import eu.m4gkbeatz.bukkitui.settings.SettingsManager;
 import eu.m4gkbeatz.bukkitui.ui.BukkitUI;
 import eu.m4gkbeatz.bukkitui.update.Updater;
+import eu.m4gkbeatz.bukkitui.webserver.WebServer;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-
-import joxy.JoxyLookAndFeel;
 
 /**
  * BukkitUI's entry-class.
@@ -36,13 +35,16 @@ public class Main {
             
             Logger log = new Logger();
             SettingsManager settings = new SettingsManager();
+            WebServer webServer = null;
             
             try {
             if (settings.checkForUpdates())
                 new Updater().checkForUpdates();
             } catch (Exception ex) { System.err.println("ERROR: Could not download updates!"); ex.printStackTrace(System.err); }
             
-            BukkitUI ui = new BukkitUI(settings, log);
+            
+            BukkitUI ui = new BukkitUI(settings, log, webServer);
+            
             ui.setVisible(true);
             
         } catch (Exception ex) {
